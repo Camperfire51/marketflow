@@ -7,6 +7,7 @@ import com.camperfire.marketflow.exception.EmailAlreadyExistsException;
 import com.camperfire.marketflow.exception.InvalidUserRoleException;
 import com.camperfire.marketflow.exception.UsernameAlreadyExistsException;
 import com.camperfire.marketflow.model.*;
+import com.camperfire.marketflow.model.user.Admin;
 import com.camperfire.marketflow.model.user.Customer;
 import com.camperfire.marketflow.model.user.Vendor;
 import com.camperfire.marketflow.repository.AuthUserRepository;
@@ -67,9 +68,6 @@ public class AuthUserService {
         if (authUserRepository.existsByUsername(registerRequest.getUsername()))
             throw new UsernameAlreadyExistsException("Username already exists");
 
-        if (registerRequest.getUserRole() == UserRole.ROLE_ADMIN)
-            throw new InvalidUserRoleException("Cannot register an admin");
-
         String token = UUID.randomUUID().toString();
 
         AuthUser authUser = AuthUser.builder()
@@ -103,6 +101,14 @@ public class AuthUserService {
                         .build();
 
                 vendorRepository.save(vendor);
+            }
+
+            case ROLE_ADMIN -> {
+                Admin admin = Admin.builder()
+                        .authUser(authUser)
+                        .address(registerRequest.getAddress())
+                        .status(UserStatus.APPROVED)
+                        .build();
             }
         }
 

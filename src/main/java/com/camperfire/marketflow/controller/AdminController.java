@@ -1,10 +1,13 @@
 package com.camperfire.marketflow.controller;
 
+import com.camperfire.marketflow.dto.mapper.CategoryMapper;
 import com.camperfire.marketflow.dto.mapper.ProductMapper;
+import com.camperfire.marketflow.dto.request.CategoryRequestDTO;
+import com.camperfire.marketflow.dto.response.CategoryResponseDTO;
 import com.camperfire.marketflow.dto.response.ProductResponseDTO;
+import com.camperfire.marketflow.model.Category;
 import com.camperfire.marketflow.model.Product;
 import com.camperfire.marketflow.model.ProductStatus;
-import com.camperfire.marketflow.service.ProductServiceImpl;
 import com.camperfire.marketflow.service.user.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -21,10 +24,13 @@ public class AdminController {
 
     private final ProductMapper productMapper;
 
+    private final CategoryMapper categoryMapper;
+
     @Autowired
-    public AdminController(AdminService adminService, ProductMapper productMapper) {
+    public AdminController(AdminService adminService, ProductMapper productMapper, CategoryMapper categoryMapper) {
         this.adminService = adminService;
         this.productMapper = productMapper;
+        this.categoryMapper = categoryMapper;
     }
 
     @GetMapping("/product")
@@ -47,13 +53,36 @@ public class AdminController {
         return ResponseEntity.ok(productMapper.toResponseList(products));
     }
 
-    @PostMapping("/products")
+    @PutMapping("/product-status")
     public ResponseEntity<Void> setProductStatus(
-            @RequestBody Long productId,
+            @RequestParam Long productId,
             @RequestParam(value = "status") ProductStatus status) {
 
         adminService.setProductStatus(productId, status);
 
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/category")
+    public ResponseEntity<List<CategoryResponseDTO>> getCategories() {
+        List<Category> categories = adminService.getCategories();
+
+        return ResponseEntity.ok(categoryMapper.toResponseList(categories));
+    }
+
+    @PostMapping("/category")
+    public ResponseEntity<CategoryResponseDTO> createCategory(@RequestBody CategoryRequestDTO categoryRequestDTO){
+        Category category = adminService.createCategory(categoryRequestDTO);
+
+        return ResponseEntity.ok(categoryMapper.toResponse(category));
+    }
+
+    @DeleteMapping("/category")
+    public ResponseEntity<Void> deleteCategory(@RequestParam(name = "categoryId") Long categoryId){
+        adminService.deleteCategory(categoryId);
+
+        return ResponseEntity.ok().build();
+    }
+
+
 }
