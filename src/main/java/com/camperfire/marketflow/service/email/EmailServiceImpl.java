@@ -16,7 +16,18 @@ public class EmailServiceImpl implements EmailService {
     }
 
     @Override
-    public void sendEmail(String to, String subject, String body) {
+    public void sendVerificationEmail(String to, String subject, String body) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom("camperfire11@gmail.com");
+        message.setTo(to);
+        message.setSubject(subject);
+        message.setText(body);
+        emailSender.send(message);
+
+    }
+
+    @Override
+    public void sendInvoiceEmail(String to, String subject, String body) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom("camperfire11@gmail.com");
         message.setTo(to);

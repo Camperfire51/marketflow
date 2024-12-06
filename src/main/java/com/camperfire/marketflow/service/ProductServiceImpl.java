@@ -2,6 +2,7 @@ package com.camperfire.marketflow.service;
 
 import com.camperfire.marketflow.dto.mapper.ProductMapper;
 import com.camperfire.marketflow.dto.request.ProductRequestDTO;
+import com.camperfire.marketflow.exception.InvalidProductParameterException;
 import com.camperfire.marketflow.exception.ProductNotFoundException;
 import com.camperfire.marketflow.model.Product;
 import com.camperfire.marketflow.model.ProductStatus;
@@ -76,6 +77,23 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product submitProduct(ProductRequestDTO productRequestDTO) {
+
+        if (productRequestDTO.getName() == null || productRequestDTO.getName().isEmpty())
+            throw new InvalidProductParameterException("Name cannot be empty");
+
+        if (productRequestDTO.getBasePrice() == null || productRequestDTO.getBasePrice().compareTo(BigDecimal.ZERO) < 0)
+            throw new InvalidProductParameterException("Base price cannot be negative");
+
+        if (productRequestDTO.getDiscountPercentage() == null || productRequestDTO.getDiscountPercentage().compareTo(BigDecimal.ZERO) < 0 ||
+                productRequestDTO.getDiscountPercentage().compareTo(new BigDecimal(100)) > 0)
+            throw new InvalidProductParameterException("Discount percentage must be an integer between 0 and 100");
+
+        if (productRequestDTO.getDescription() == null || productRequestDTO.getDescription().isEmpty())
+            throw new InvalidProductParameterException("Description cannot be empty");
+
+        if (productRequestDTO.getQuantity() == null || productRequestDTO.getQuantity() < 0)
+            throw new InvalidProductParameterException("Quantity cannot be negative");
+
         Product product = productMapper.toEntity(productRequestDTO);
         product.setStatus(ProductStatus.PENDING);
         productRepository.save(product);
@@ -84,7 +102,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product modifyProduct(Long productId, ProductRequestDTO productRequestDTO) {
-        if(!productRepository.existsById(productId))
+        if (!productRepository.existsById(productId))
             throw new ProductNotFoundException("Product with id (" + productId + ") was not found");
 
         Product product = productMapper.toEntity(productRequestDTO);
@@ -96,7 +114,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void deleteProduct(Long productId) {
-        if(!productRepository.existsById(productId))
+        if (!productRepository.existsById(productId))
             throw new ProductNotFoundException("Product with id (" + productId + ") was not found");
 
         productRepository.deleteById(productId);

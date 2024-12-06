@@ -20,5 +20,4 @@ public class ProductResponseDTO {
     private String description;
     private Long categoryId;
     private Long vendorId;
-    private ProductStatus status;
 }

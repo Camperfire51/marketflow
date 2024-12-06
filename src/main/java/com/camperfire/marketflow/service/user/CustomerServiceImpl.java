@@ -10,9 +10,7 @@ import com.camperfire.marketflow.model.user.Customer;
 import com.camperfire.marketflow.model.Product;
 import com.camperfire.marketflow.repository.CartRepository;
 import com.camperfire.marketflow.repository.user.CustomerRepository;
-import com.camperfire.marketflow.service.AuthUserService;
-import com.camperfire.marketflow.service.InvoiceService;
-import com.camperfire.marketflow.service.ProductService;
+import com.camperfire.marketflow.service.*;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -23,18 +21,16 @@ import java.util.Map;
 public class CustomerServiceImpl implements CustomerService {
 
     private final AuthUserService authUserService;
-    private final CustomerRepository customerRepository;
 
     private final ProductService productService;
-    private final InvoiceService invoiceService;
+    private final OrderService orderService;
     private final CartRepository cartRepository;
 
-    public CustomerServiceImpl(AuthUserService authUserService, CustomerRepository customerRepository, ProductService productService, InvoiceService invoiceService, CartRepository cartRepository) {
+    public CustomerServiceImpl(AuthUserService authUserService, ProductService productService, OrderService orderService, CartRepository cartRepository) {
         this.authUserService = authUserService;
-        this.customerRepository = customerRepository;
 
         this.productService = productService;
-        this.invoiceService = invoiceService;
+        this.orderService = orderService;
         this.cartRepository = cartRepository;
     }
 
@@ -118,11 +114,10 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public CustomerOrder submitOrder() {
+    public CustomerOrder order() {
         Cart cart = getCart();
-        Customer customer = getCustomer();
-        cartRepository.save(cart);
-
-        return invoiceService.order(customer, cart);
+        CustomerOrder order = orderService.order(cart);
+        resetCart();
+        return order;
     }
 }

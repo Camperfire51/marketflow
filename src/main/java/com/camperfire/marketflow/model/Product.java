@@ -18,12 +18,16 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String name;
 
+    @Column(nullable = false)
     private BigDecimal basePrice;
 
+    @Column(nullable = false)
     private BigDecimal discountPercentage;
 
+    @Column(nullable = false)
     private String description;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -34,7 +38,9 @@ public class Product {
     @JoinColumn(name = "vendor_id", nullable = false)
     private Vendor vendor;
 
+    @Column(nullable = false)
     private Long quantity;
 
+    @Column(nullable = false)
     private ProductStatus status;
 }

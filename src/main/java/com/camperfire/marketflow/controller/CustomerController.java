@@ -85,7 +85,7 @@ public class CustomerController {
 
     @PostMapping("/order")
     public ResponseEntity<String> submitOrder() {
-        CustomerOrder customerOrder = customerService.submitOrder();
+        CustomerOrder customerOrder = customerService.order();
 
         return ResponseEntity.ok("TODO, IMPLEMENT ORDER DTO");
     }

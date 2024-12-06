@@ -24,5 +24,5 @@ public interface CustomerService {
 
     Cart resetCart();
 
-    CustomerOrder submitOrder();
+    CustomerOrder order();
 }
