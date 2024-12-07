@@ -22,4 +22,6 @@ public interface VendorService {
     Product modifyProduct(Long productId, ProductRequestDTO productRequestDTO);
 
     void deleteProduct(Long productId);
+
+    void setProductDiscount(Long productId, BigDecimal newDiscount);
 }

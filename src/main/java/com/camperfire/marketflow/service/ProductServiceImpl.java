@@ -129,4 +129,13 @@ public class ProductServiceImpl implements ProductService {
         productRepository.save(product);
         return product;
     }
+
+    @Override
+    public void setProductDiscount(Long productId, BigDecimal newDiscount) {
+        Product product = getProduct(productId);
+
+        product.setDiscountPercentage(newDiscount);
+
+        productRepository.save(product);
+    }
 }

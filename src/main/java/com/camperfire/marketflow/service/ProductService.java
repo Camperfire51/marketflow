@@ -20,4 +20,6 @@ public interface ProductService {
     void deleteProduct(Long id);
 
     Product setProductStatus(Long productId, ProductStatus status);
+
+    void setProductDiscount(Long productId, BigDecimal newDiscount);
 }

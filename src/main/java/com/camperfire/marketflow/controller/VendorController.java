@@ -78,4 +78,14 @@ public class VendorController {
         return ResponseEntity.status(HttpStatus.OK).body(ProductResponseDTO.builder().build());
     }
 
+    @PutMapping("/set-product-discount")
+    public ResponseEntity<Void> setProductDiscount(
+            @RequestParam(value = "productId") Long productId,
+            @RequestParam(value = "newAmount") BigDecimal newAmount){
+
+        vendorService.setProductDiscount(productId, newAmount);
+
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
 }
