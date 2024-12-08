@@ -88,4 +88,9 @@ public class VendorController {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
+    @GetMapping("/product-restock-alarms")
+    public ResponseEntity<List<ProductResponseDTO>> getProductRestockAlarms(){
+        vendorService.getRestockAlarms();
+    }
+
 }

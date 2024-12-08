@@ -6,7 +6,6 @@ import com.camperfire.marketflow.exception.InvalidProductParameterException;
 import com.camperfire.marketflow.exception.ProductNotFoundException;
 import com.camperfire.marketflow.model.Product;
 import com.camperfire.marketflow.model.ProductStatus;
-import com.camperfire.marketflow.model.user.Vendor;
 import com.camperfire.marketflow.repository.ProductRepository;
 import com.camperfire.marketflow.specification.ProductSpecification;
 import org.springframework.beans.factory.annotation.Autowired;

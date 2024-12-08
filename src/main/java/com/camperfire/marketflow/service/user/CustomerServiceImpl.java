@@ -25,13 +25,15 @@ public class CustomerServiceImpl implements CustomerService {
     private final ProductService productService;
     private final OrderService orderService;
     private final CartRepository cartRepository;
+    private final NotificationService notificationService;
 
-    public CustomerServiceImpl(AuthUserService authUserService, ProductService productService, OrderService orderService, CartRepository cartRepository) {
+    public CustomerServiceImpl(AuthUserService authUserService, ProductService productService, OrderService orderService, CartRepository cartRepository, NotificationService notificationService) {
         this.authUserService = authUserService;
 
         this.productService = productService;
         this.orderService = orderService;
         this.cartRepository = cartRepository;
+        this.notificationService = notificationService;
     }
 
     @Override
@@ -118,6 +120,28 @@ public class CustomerServiceImpl implements CustomerService {
         Cart cart = getCart();
         CustomerOrder order = orderService.order(cart);
         resetCart();
+
+        for (Map.Entry<Product, Long> productEntry : cart.getProducts().entrySet()) {
+            Product product = productEntry.getKey();
+            Long requestedQuantity = productEntry.getValue();
+            Long stockQuantity = product.getQuantity();
+
+            if (stockQuantity < requestedQuantity)
+                throw new NotEnoughProductQuantityException("Not enough stock for product with id: " + productEntry.getKey().getId() + "\n Only have: " + stockQuantity);
+        }
+
+        for (Map.Entry<Product, Long> productEntry : cart.getProducts().entrySet()) {
+            Product product = productEntry.getKey();
+            Long requestedQuantity = productEntry.getValue();
+            Long stockQuantity = product.getQuantity();
+            Long newQuantity = stockQuantity - requestedQuantity;
+
+            productEntry.getKey().setQuantity(newQuantity);
+
+            if (newQuantity < product.getRestockAlarmQuantity())
+                notificationService.sendRestockAlarmNotification(product.getId());
+        }
+
         return order;
     }
 }

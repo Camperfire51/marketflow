@@ -24,4 +24,6 @@ public interface VendorService {
     void deleteProduct(Long productId);
 
     void setProductDiscount(Long productId, BigDecimal newDiscount);
+
+    void getRestockAlarms();
 }

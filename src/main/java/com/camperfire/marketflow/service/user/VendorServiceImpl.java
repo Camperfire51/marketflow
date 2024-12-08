@@ -1,7 +1,6 @@
 package com.camperfire.marketflow.service.user;
 
 import com.camperfire.marketflow.dto.request.ProductRequestDTO;
-import com.camperfire.marketflow.exception.UnauthorizedAccessException;
 import com.camperfire.marketflow.model.Product;
 import com.camperfire.marketflow.model.ProductStatus;
 import com.camperfire.marketflow.model.user.Vendor;
@@ -60,5 +59,10 @@ public class VendorServiceImpl implements VendorService {
     @Override
     public void setProductDiscount(Long productId, BigDecimal newDiscount){
         productService.setProductDiscount(productId, newDiscount);
+    }
+
+    @Override
+    public void getRestockAlarms() {
+
     }
 }
