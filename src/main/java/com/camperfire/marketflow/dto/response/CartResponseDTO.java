@@ -11,7 +11,7 @@ import java.util.Map;
 @AllArgsConstructor
 @Builder
 public class CartResponseDTO {
-    private BigDecimal totalBasePrice; // Total price without discounts
-    private BigDecimal totalDiscountedPrice; // Total price with discounts applied
-    private Map<ProductResponseDTO, Long> cartItems; // List of cart items
+    private BigDecimal totalBasePrice;
+    private BigDecimal totalDiscount;
+    private Map<ProductResponseDTO, Long> products;
 }

@@ -11,27 +11,38 @@ import com.camperfire.marketflow.repository.ProductRepository;
 import com.camperfire.marketflow.specification.ProductSpecification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
     private final ProductMapper productMapper;
+    private final RedisTemplate<String, Object> redisTemplate;
 
     @Autowired
-    public ProductServiceImpl(ProductRepository productRepository, ProductMapper productMapper) {
+    public ProductServiceImpl(ProductRepository productRepository, ProductMapper productMapper, RedisTemplate<String, Object> redisTemplate) {
         this.productRepository = productRepository;
         this.productMapper = productMapper;
+        this.redisTemplate = redisTemplate;
     }
 
     @Override
     public Product getProduct(Long productId) {
+        Product cachedProduct = getProductFromCache(productId);
+
+        if (cachedProduct != null)
+            return cachedProduct;
+
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ProductNotFoundException("Product with id (" + productId + ") was not found"));
+
+        saveProductToCache(productId, product);
 
         if (product.getStatus() != ProductStatus.PUBLISHED)
             throw new ProductNotFoundException("Product with id (" + productId + ") was not published");
@@ -118,6 +129,8 @@ public class ProductServiceImpl implements ProductService {
             throw new ProductNotFoundException("Product with id (" + productId + ") was not found");
 
         productRepository.deleteById(productId);
+
+        removeProductFromCache(productId);
     }
 
     @Override
@@ -137,5 +150,17 @@ public class ProductServiceImpl implements ProductService {
         product.setDiscountPercentage(newDiscount);
 
         productRepository.save(product);
+    }
+
+    public void saveProductToCache(Long productId, Product product) {
+        redisTemplate.opsForValue().set("product:" + productId, product, 10, TimeUnit.MINUTES);
+    }
+
+    public Product getProductFromCache(Long productId) {
+        return (Product) redisTemplate.opsForValue().get("product:" + productId);
+    }
+
+    public void removeProductFromCache(Long productId) {
+        redisTemplate.delete("product:" + productId);
     }
 }

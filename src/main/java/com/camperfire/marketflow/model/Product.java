@@ -43,4 +43,7 @@ public class Product {
 
     @Column(nullable = false)
     private ProductStatus status;
+
+    @Column(nullable = false)
+    private Long restockAlarmQuantity;
 }

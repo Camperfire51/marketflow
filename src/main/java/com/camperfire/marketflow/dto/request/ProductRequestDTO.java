@@ -17,4 +17,5 @@ public class ProductRequestDTO {
     private Long categoryId;
     private Long vendorId;
     private Long quantity;
+    private Long restockAlarmQuantity;
 }
