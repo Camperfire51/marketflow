@@ -9,8 +9,8 @@ import com.camperfire.marketflow.model.ProductStatus;
 import com.camperfire.marketflow.model.user.Customer;
 import com.camperfire.marketflow.model.Product;
 import com.camperfire.marketflow.repository.CartRepository;
-import com.camperfire.marketflow.repository.user.CustomerRepository;
 import com.camperfire.marketflow.service.*;
+import com.camperfire.marketflow.service.notification.NotificationService;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -49,8 +49,8 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public Product getProduct(Long productId) {
-        Product product = productService.getProduct(productId);
-        return productService.getProduct(productId);
+        Product product = productService.readProduct(productId);
+        return productService.readProduct(productId);
     }
 
     @Override
@@ -60,7 +60,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public Cart addProductToCart(Long productId, Long quantity) {
-        Product product = productService.getProduct(productId);
+        Product product = productService.readProduct(productId);
 
         Long remainingQuantity = product.getQuantity();
 
@@ -88,7 +88,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public Cart removeProductFromCart(Long productId, Long quantity) {
-        Product product = productService.getProduct(productId);
+        Product product = productService.readProduct(productId);
 
         Customer customer = getCustomer();
 
@@ -139,7 +139,7 @@ public class CustomerServiceImpl implements CustomerService {
             productEntry.getKey().setQuantity(newQuantity);
 
             if (newQuantity < product.getRestockAlarmQuantity())
-                notificationService.sendRestockAlarmNotification(product.getId());
+                notificationService.getNotifications(product.getId());
         }
 
         return order;

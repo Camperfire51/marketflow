@@ -42,8 +42,8 @@ public class Product {
     private Long quantity;
 
     @Column(nullable = false)
-    private ProductStatus status;
+    private Long restockAlarmQuantity;
 
     @Column(nullable = false)
-    private Long restockAlarmQuantity;
+    private ProductStatus status;
 }

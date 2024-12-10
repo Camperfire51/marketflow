@@ -2,7 +2,7 @@ package com.camperfire.marketflow.service;
 
 import com.camperfire.marketflow.dto.mapper.ProductMapper;
 import com.camperfire.marketflow.dto.request.ProductRequestDTO;
-import com.camperfire.marketflow.exception.InvalidProductParameterException;
+import com.camperfire.marketflow.exception.NotImplementedException;
 import com.camperfire.marketflow.exception.ProductNotFoundException;
 import com.camperfire.marketflow.model.Product;
 import com.camperfire.marketflow.model.ProductStatus;
@@ -29,24 +29,6 @@ public class ProductServiceImpl implements ProductService {
         this.productRepository = productRepository;
         this.productMapper = productMapper;
         this.redisTemplate = redisTemplate;
-    }
-
-    @Override
-    public Product getProduct(Long productId) {
-        Product cachedProduct = getProductFromCache(productId);
-
-        if (cachedProduct != null)
-            return cachedProduct;
-
-        Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new ProductNotFoundException("Product with id (" + productId + ") was not found"));
-
-        saveProductToCache(productId, product);
-
-        if (product.getStatus() != ProductStatus.PUBLISHED)
-            throw new ProductNotFoundException("Product with id (" + productId + ") was not published");
-
-        return product;
     }
 
     @Override
@@ -86,80 +68,64 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product submitProduct(ProductRequestDTO productRequestDTO) {
-
-        if (productRequestDTO.getName() == null || productRequestDTO.getName().isEmpty())
-            throw new InvalidProductParameterException("Name cannot be empty");
-
-        if (productRequestDTO.getBasePrice() == null || productRequestDTO.getBasePrice().compareTo(BigDecimal.ZERO) < 0)
-            throw new InvalidProductParameterException("Base price cannot be negative");
-
-        if (productRequestDTO.getDiscountPercentage() == null || productRequestDTO.getDiscountPercentage().compareTo(BigDecimal.ZERO) < 0 ||
-                productRequestDTO.getDiscountPercentage().compareTo(new BigDecimal(100)) > 0)
-            throw new InvalidProductParameterException("Discount percentage must be an integer between 0 and 100");
-
-        if (productRequestDTO.getDescription() == null || productRequestDTO.getDescription().isEmpty())
-            throw new InvalidProductParameterException("Description cannot be empty");
-
-        if (productRequestDTO.getQuantity() == null || productRequestDTO.getQuantity() < 0)
-            throw new InvalidProductParameterException("Quantity cannot be negative");
-
-        Product product = productMapper.toEntity(productRequestDTO);
-        product.setStatus(ProductStatus.PENDING);
-        productRepository.save(product);
-        return product;
-    }
-
-    @Override
-    public Product modifyProduct(Long productId, ProductRequestDTO productRequestDTO) {
-        if (!productRepository.existsById(productId))
-            throw new ProductNotFoundException("Product with id (" + productId + ") was not found");
-
-        Product product = productMapper.toEntity(productRequestDTO);
-        product.setId(productId);
-        product.setStatus(ProductStatus.PENDING);
-        productRepository.save(product);
-        return product;
-    }
-
-    @Override
-    public void deleteProduct(Long productId) {
-        if (!productRepository.existsById(productId))
-            throw new ProductNotFoundException("Product with id (" + productId + ") was not found");
-
-        productRepository.deleteById(productId);
-
-        removeProductFromCache(productId);
-    }
-
-    @Override
-    public Product setProductStatus(Long productId, ProductStatus status) {
-        Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new ProductNotFoundException("Product with id (" + productId + ") was not found"));
-
+    public void setProductStatus(Long productId, ProductStatus status) {
+        Product product = readProduct(productId);
         product.setStatus(status);
         productRepository.save(product);
-        return product;
     }
 
     @Override
     public void setProductDiscount(Long productId, BigDecimal newDiscount) {
-        Product product = getProduct(productId);
+        Product product = readProduct(productId);
 
         product.setDiscountPercentage(newDiscount);
 
         productRepository.save(product);
     }
 
-    public void saveProductToCache(Long productId, Product product) {
+    // CRUD operations with database and cache considerations
+    // Note that, product deletion is not implemented. Instead, we set the status of the product to "DELETED".
+    // This way, it is "soft deleted", and can be undone by the authority.
+
+    @Override
+    public Product createProduct(ProductRequestDTO productRequestDTO){
+        Product product = productMapper.toEntity(productRequestDTO);
+        product.setStatus(ProductStatus.PENDING);
+        return productRepository.save(product);
+    }
+
+    @Override
+    public Product readProduct(Long productId){
+        Product cachedProduct = (Product) redisTemplate.opsForValue().get("product:" + productId);
+
+        if (cachedProduct != null)
+            return cachedProduct;
+
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new ProductNotFoundException("Product with id (" + productId + ") was not found"));
+
         redisTemplate.opsForValue().set("product:" + productId, product, 10, TimeUnit.MINUTES);
+
+        return product;
     }
 
-    public Product getProductFromCache(Long productId) {
-        return (Product) redisTemplate.opsForValue().get("product:" + productId);
+    @Override
+    public Product updateProduct(Long productId, ProductRequestDTO productRequestDTO){
+        Product product = productMapper.toEntity(productRequestDTO);
+        product.setStatus(ProductStatus.PENDING);
+        product.setId(productId);
+        return productRepository.save(product);
     }
 
-    public void removeProductFromCache(Long productId) {
-        redisTemplate.delete("product:" + productId);
+    @Override
+    public void deleteProduct(Long productId) {
+        throw new NotImplementedException("Hard delete is not supported");
+
+//        if (!productRepository.existsById(productId))
+//            throw new ProductNotFoundException("Product with id (" + productId + ") was not found");
+//
+//        productRepository.deleteById(productId);
+//
+//        redisTemplate.delete("product:" + productId);
     }
 }

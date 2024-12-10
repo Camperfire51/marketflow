@@ -9,17 +9,17 @@ import java.util.List;
 
 public interface ProductService {
 
-    Product getProduct(Long productId);
-
     List<Product> getProducts(String name, BigDecimal minPrice, BigDecimal maxPrice, String categoryPath, Long vendorId, ProductStatus status);
 
-    Product submitProduct(ProductRequestDTO productRequestDTO);
-
-    Product modifyProduct(Long productId, ProductRequestDTO productRequestDTO);
-
-    void deleteProduct(Long id);
-
-    Product setProductStatus(Long productId, ProductStatus status);
+    void setProductStatus(Long productId, ProductStatus status);
 
     void setProductDiscount(Long productId, BigDecimal newDiscount);
+
+    Product createProduct(ProductRequestDTO productRequestDTO);
+
+    Product readProduct(Long productId);
+
+    Product updateProduct(Long productId, ProductRequestDTO productRequestDTO);
+
+    void deleteProduct(Long productId);
 }

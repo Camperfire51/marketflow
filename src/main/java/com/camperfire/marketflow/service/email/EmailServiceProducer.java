@@ -5,13 +5,13 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
-public class EmailVerificationProducer {
+public class EmailServiceProducer {
 
     private final KafkaTemplate<String, Object> kafkaTemplate;
     private static final String TOPIC = "email-verification-topic";
 
     @Autowired
-    public EmailVerificationProducer(KafkaTemplate<String, Object> kafkaTemplate) {
+    public EmailServiceProducer(KafkaTemplate<String, Object> kafkaTemplate) {
         this.kafkaTemplate = kafkaTemplate;
     }
 

@@ -4,7 +4,6 @@ import com.camperfire.marketflow.dto.request.LoginRequest;
 import com.camperfire.marketflow.dto.request.RegisterRequest;
 import com.camperfire.marketflow.dto.response.LoginResponse;
 import com.camperfire.marketflow.exception.EmailAlreadyExistsException;
-import com.camperfire.marketflow.exception.InvalidUserRoleException;
 import com.camperfire.marketflow.exception.UsernameAlreadyExistsException;
 import com.camperfire.marketflow.model.*;
 import com.camperfire.marketflow.model.user.Admin;
@@ -13,7 +12,7 @@ import com.camperfire.marketflow.model.user.Vendor;
 import com.camperfire.marketflow.repository.AuthUserRepository;
 import com.camperfire.marketflow.repository.user.CustomerRepository;
 import com.camperfire.marketflow.repository.user.VendorRepository;
-import com.camperfire.marketflow.service.email.EmailVerificationProducer;
+import com.camperfire.marketflow.service.email.EmailServiceProducer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -32,20 +31,20 @@ public class AuthUserService {
     private final CustomerRepository customerRepository;
     private final VendorRepository vendorRepository;
 
-    private final EmailVerificationProducer emailVerificationProducer;
+    private final EmailServiceProducer emailServiceProducer;
 
     private final JWTService jwtService;
     private final AuthenticationManager authManager;
     private final BCryptPasswordEncoder encoder;
 
     @Autowired
-    public AuthUserService(AuthUserRepository authUserRepository, CustomerRepository customerRepository, VendorRepository vendorRepository, EmailVerificationProducer emailVerificationProducer, JWTService jwtService, AuthenticationManager authManager) {
+    public AuthUserService(AuthUserRepository authUserRepository, CustomerRepository customerRepository, VendorRepository vendorRepository, EmailServiceProducer emailServiceProducer, JWTService jwtService, AuthenticationManager authManager) {
         this.authUserRepository = authUserRepository;
 
         this.customerRepository = customerRepository;
         this.vendorRepository = vendorRepository;
 
-        this.emailVerificationProducer = emailVerificationProducer;
+        this.emailServiceProducer = emailServiceProducer;
 
         this.jwtService = jwtService;
         this.authManager = authManager;

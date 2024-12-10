@@ -6,11 +6,11 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 @Service
-public class EmailVerificationConsumer {
+public class EmailServiceConsumer {
 
     private final JavaMailSender javaMailSender;
 
-    public EmailVerificationConsumer(JavaMailSender javaMailSender) {
+    public EmailServiceConsumer(JavaMailSender javaMailSender) {
         this.javaMailSender = javaMailSender;
     }
 

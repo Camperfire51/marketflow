@@ -38,7 +38,7 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public Product getProduct(Long productId) {
-        return productService.getProduct(productId);
+        return productService.readProduct(productId);
     }
 
     @Override

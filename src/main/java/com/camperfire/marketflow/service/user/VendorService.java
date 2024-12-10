@@ -11,15 +11,13 @@ import java.util.List;
 public interface VendorService {
     Vendor getVendor();
 
-    Product getProduct(Long productId);
+    Product readProduct(Long productId);
 
-    List<Product> getProducts(String name, BigDecimal minPrice, BigDecimal maxPrice, String categoryPath, Long vendorId);
+    List<Product> getProducts(String name, BigDecimal minPrice, BigDecimal maxPrice, String categoryPath, Long vendorId, ProductStatus status);
 
-    List<Product> getProductRequests(String name, BigDecimal minPrice, BigDecimal maxPrice, String categoryPath);
+    Product createProduct(ProductRequestDTO productRequestDTO);
 
-    Product submitProduct(ProductRequestDTO productRequestDTO);
-
-    Product modifyProduct(Long productId, ProductRequestDTO productRequestDTO);
+    Product updateProduct(Long productId, ProductRequestDTO productRequestDTO);
 
     void deleteProduct(Long productId);
 
