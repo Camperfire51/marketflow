@@ -1,8 +1,10 @@
 package com.camperfire.marketflow.service.email;
 
+import com.camperfire.marketflow.model.EmailMessage;
+
 public interface EmailService {
 
-    public void sendVerificationEmail(String to, String subject, String body);
+    void listen(EmailMessage emailMessage);
 
-    void sendInvoiceEmail(String to, String subject, String body);
+    void submit(EmailMessage emailMessage);
 }

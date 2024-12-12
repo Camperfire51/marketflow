@@ -54,7 +54,7 @@ public class VendorController {
     @GetMapping("/notifications")
     public ResponseEntity<List<ProductResponseDTO>> getProductRestockAlarms() {
         vendorService.getRestockAlarms();
-
+        return null; //TODO: Imple
     }
 
     // Basic CRUD for product

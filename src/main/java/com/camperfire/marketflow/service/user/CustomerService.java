@@ -1,7 +1,7 @@
 package com.camperfire.marketflow.service.user;
 
 import com.camperfire.marketflow.model.Cart;
-import com.camperfire.marketflow.model.CustomerOrder;
+import com.camperfire.marketflow.model.Order;
 import com.camperfire.marketflow.model.Product;
 import com.camperfire.marketflow.model.user.Customer;
 
@@ -24,5 +24,5 @@ public interface CustomerService {
 
     Cart resetCart();
 
-    CustomerOrder order();
+    Order order();
 }

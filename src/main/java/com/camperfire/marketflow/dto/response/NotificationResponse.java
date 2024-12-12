@@ -2,11 +2,14 @@ package com.camperfire.marketflow.dto.response;
 
 import com.camperfire.marketflow.model.NotificationType;
 import jakarta.validation.constraints.NotNull;
+import lombok.*;
 
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class NotificationResponse {
-    @NotNull(message = "User ID can not be null")
-    private Long userId;
-
     @NotNull(message = "Notification type can not be null")
     private NotificationType type;
 

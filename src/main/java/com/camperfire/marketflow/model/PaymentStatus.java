@@ -1,7 +1,7 @@
 package com.camperfire.marketflow.model;
 
-public enum OrderStatus {
+public enum PaymentStatus {
     PENDING,
     COMPLETED,
-    CANCELED
+    FAILED
 }

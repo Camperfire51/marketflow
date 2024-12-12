@@ -1,6 +1,11 @@
 package com.camperfire.marketflow.service.email;
 
+import com.camperfire.marketflow.model.EmailMessage;
+import com.camperfire.marketflow.repository.EmailMessageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -8,32 +13,33 @@ import org.springframework.stereotype.Service;
 @Service
 public class EmailServiceImpl implements EmailService {
 
+    private final EmailMessageRepository emailMessageRepository;
     private final JavaMailSender emailSender;
+    private final KafkaTemplate<String, Object> kafkaTemplate;
+    private final String TOPIC;
 
     @Autowired
-    public EmailServiceImpl(JavaMailSender emailSender) {
+    public EmailServiceImpl(EmailMessageRepository emailMessageRepository, JavaMailSender emailSender, KafkaTemplate<String, Object> kafkaTemplate, @Value("${kafka.topics.email-topic}") String topic) {
+        this.emailMessageRepository = emailMessageRepository;
         this.emailSender = emailSender;
+        this.kafkaTemplate = kafkaTemplate;
+        TOPIC = topic;
     }
 
-    @Override
-    public void sendVerificationEmail(String to, String subject, String body) {
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom("camperfire11@gmail.com");
-        message.setTo(to);
-        message.setSubject(subject);
-        message.setText(body);
-        emailSender.send(message);
+    @KafkaListener(topics = "${kafka.topics.email-topic}", groupId = "${kafka.groups.email-group}")
+    public void listen(EmailMessage emailMessage) {
+        SimpleMailMessage msg = new SimpleMailMessage();
 
+        msg.setFrom(emailMessage.getFrom());
+        msg.setTo(emailMessage.getTo());
+        msg.setSubject(emailMessage.getSubject());
+        msg.setText(emailMessage.getText());
+        emailSender.send(msg);
+
+        emailMessageRepository.save(emailMessage);
     }
 
-    @Override
-    public void sendInvoiceEmail(String to, String subject, String body) {
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom("camperfire11@gmail.com");
-        message.setTo(to);
-        message.setSubject(subject);
-        message.setText(body);
-        emailSender.send(message);
-
+    public void submit(EmailMessage emailMessage) {
+        kafkaTemplate.send(TOPIC, emailMessage);
     }
 }

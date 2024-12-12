@@ -1,7 +1,10 @@
 package com.camperfire.marketflow.service;
 
+import com.camperfire.marketflow.dto.mapper.OrderMapper;
+import com.camperfire.marketflow.dto.request.InvoiceRequest;
+import com.camperfire.marketflow.dto.request.OrderRequest;
 import com.camperfire.marketflow.model.Cart;
-import com.camperfire.marketflow.model.CustomerOrder;
+import com.camperfire.marketflow.model.Order;
 import com.camperfire.marketflow.model.OrderStatus;
 import com.camperfire.marketflow.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,27 +15,43 @@ import java.time.LocalDateTime;
 @Service
 public class OrderServiceImpl implements OrderService {
 
+    private final OrderMapper orderMapper;
     private final OrderRepository orderRepository;
     private final InvoiceService invoiceService;
 
     @Autowired
-    public OrderServiceImpl(OrderRepository orderRepository, InvoiceService invoiceService) {
+    public OrderServiceImpl(OrderMapper orderMapper, OrderRepository orderRepository, InvoiceService invoiceService) {
+        this.orderMapper = orderMapper;
         this.orderRepository = orderRepository;
         this.invoiceService = invoiceService;
     }
 
     @Override
-    public CustomerOrder order(Cart cart) {
-        CustomerOrder customerOrder = CustomerOrder.builder()
-                .customer(cart.getCustomer())
-                .products(cart.getProducts())
-                .orderDate(LocalDateTime.now())
-                .status(OrderStatus.PENDING)
-                .shippingAddress(cart.getCustomer().getAddress())
-                .build();
+    public Order createOrder(OrderRequest orderRequest) {
+        Order order = orderMapper.toEntity(orderRequest);
 
-        invoiceService.createInvoice(customerOrder);
+        InvoiceRequest invoiceRequest = InvoiceRequest.builder().build();
 
-        return orderRepository.save(customerOrder);
+        invoiceService.createInvoice(invoiceRequest);
+
+        return orderRepository.save(order);
+    }
+
+    @Override
+    public Order readOrder(Long orderId) {
+        return orderRepository.findById(orderId).orElseThrow();
+    }
+
+    @Override
+    public Order updateOrder(Long orderId, OrderRequest orderRequest) {
+        Order order = orderMapper.toEntity(orderRequest);
+        order.setId(orderId);
+        return orderRepository.save(order);
+    }
+
+    @Override
+    public void deleteOrder(Long orderId) {
+        Order order = orderRepository.findById(orderId).orElseThrow();
+        orderRepository.delete(order);
     }
 }

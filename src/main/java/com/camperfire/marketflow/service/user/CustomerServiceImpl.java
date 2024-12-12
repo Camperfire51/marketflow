@@ -1,19 +1,25 @@
 package com.camperfire.marketflow.service.user;
 
+import com.camperfire.marketflow.dto.mapper.ProductMapper;
+import com.camperfire.marketflow.dto.request.NotificationRequest;
+import com.camperfire.marketflow.dto.request.OrderRequest;
+import com.camperfire.marketflow.dto.request.PaymentRequest;
+import com.camperfire.marketflow.dto.request.ProductRequestDTO;
 import com.camperfire.marketflow.exception.NotEnoughProductQuantityException;
+import com.camperfire.marketflow.exception.PaymentException;
 import com.camperfire.marketflow.exception.ProductNotFoundException;
 import com.camperfire.marketflow.exception.ProductOutOfStocksException;
-import com.camperfire.marketflow.model.Cart;
-import com.camperfire.marketflow.model.CustomerOrder;
-import com.camperfire.marketflow.model.ProductStatus;
+import com.camperfire.marketflow.model.*;
+import com.camperfire.marketflow.model.user.BaseUser;
 import com.camperfire.marketflow.model.user.Customer;
-import com.camperfire.marketflow.model.Product;
 import com.camperfire.marketflow.repository.CartRepository;
 import com.camperfire.marketflow.service.*;
+import com.camperfire.marketflow.service.email.EmailService;
 import com.camperfire.marketflow.service.notification.NotificationService;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -25,15 +31,22 @@ public class CustomerServiceImpl implements CustomerService {
     private final ProductService productService;
     private final OrderService orderService;
     private final CartRepository cartRepository;
-    private final NotificationService notificationService;
 
-    public CustomerServiceImpl(AuthUserService authUserService, ProductService productService, OrderService orderService, CartRepository cartRepository, NotificationService notificationService) {
+    private final NotificationService notificationService;
+    private final EmailService emailService;
+    private final ProductMapper productMapper;
+    private final PaymentService paymentService;
+
+    public CustomerServiceImpl(AuthUserService authUserService, ProductService productService, OrderService orderService, CartRepository cartRepository, NotificationService notificationService, EmailService emailService, ProductMapper productMapper, PaymentService paymentService) {
         this.authUserService = authUserService;
 
         this.productService = productService;
         this.orderService = orderService;
         this.cartRepository = cartRepository;
         this.notificationService = notificationService;
+        this.emailService = emailService;
+        this.productMapper = productMapper;
+        this.paymentService = paymentService;
     }
 
     @Override
@@ -116,10 +129,8 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public CustomerOrder order() {
+    public Order order() {
         Cart cart = getCart();
-        CustomerOrder order = orderService.order(cart);
-        resetCart();
 
         for (Map.Entry<Product, Long> productEntry : cart.getProducts().entrySet()) {
             Product product = productEntry.getKey();
@@ -130,17 +141,49 @@ public class CustomerServiceImpl implements CustomerService {
                 throw new NotEnoughProductQuantityException("Not enough stock for product with id: " + productEntry.getKey().getId() + "\n Only have: " + stockQuantity);
         }
 
+        OrderRequest orderRequest = OrderRequest.builder()
+                .customer(getCustomer())
+                .orderDate(LocalDateTime.now())
+                .products(cart.getProducts())
+                .status(OrderStatus.PENDING)
+                .shippingAddress(getCustomer().getAddress())
+                .build();
+
+        PaymentRequest paymentRequest = PaymentRequest.builder().build();
+
+        if (paymentService.processPayment(paymentRequest).getStatus() != PaymentStatus.COMPLETED)
+            throw new PaymentException("Payment failed");
+
+        Order order = orderService.createOrder(orderRequest);
+
         for (Map.Entry<Product, Long> productEntry : cart.getProducts().entrySet()) {
             Product product = productEntry.getKey();
             Long requestedQuantity = productEntry.getValue();
             Long stockQuantity = product.getQuantity();
             Long newQuantity = stockQuantity - requestedQuantity;
 
-            productEntry.getKey().setQuantity(newQuantity);
+            product.setQuantity(newQuantity);
 
-            if (newQuantity < product.getRestockAlarmQuantity())
-                notificationService.getNotifications(product.getId());
+            ProductRequestDTO productRequestDTO = productMapper.toRequest(product);
+
+            productService.updateProduct(product.getId(), productRequestDTO);
+
+            BaseUser vendor = product.getVendor();
+
+            if (newQuantity < product.getRestockAlarmQuantity()){
+                NotificationRequest notificationRequest = NotificationRequest.builder()
+                        .message("Quantity of your product " + product.getName() + "is below the restock level")
+                        .type(NotificationType.PRODUCT_RESTOCK_ALARM)
+                        .userId(vendor.getId())
+                        .build();
+
+                notificationService.createNotification(notificationRequest);
+
+                BaseUser customer = getCustomer();
+            }
         }
+
+        resetCart();
 
         return order;
     }

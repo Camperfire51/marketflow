@@ -5,7 +5,7 @@ import com.camperfire.marketflow.dto.mapper.ProductMapper;
 import com.camperfire.marketflow.dto.response.CartResponseDTO;
 import com.camperfire.marketflow.dto.response.ProductResponseDTO;
 import com.camperfire.marketflow.model.Cart;
-import com.camperfire.marketflow.model.CustomerOrder;
+import com.camperfire.marketflow.model.Order;
 import com.camperfire.marketflow.model.Product;
 import com.camperfire.marketflow.service.user.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,7 +85,7 @@ public class CustomerController {
 
     @PostMapping("/order")
     public ResponseEntity<String> submitOrder() {
-        CustomerOrder customerOrder = customerService.order();
+        Order order = customerService.order();
 
         return ResponseEntity.ok("TODO, IMPLEMENT ORDER DTO");
     }

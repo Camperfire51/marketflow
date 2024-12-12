@@ -96,12 +96,12 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product readProduct(Long productId){
-        Product cachedProduct = (Product) redisTemplate.opsForValue().get("product:" + productId);
+        Product product = (Product) redisTemplate.opsForValue().get("product:" + productId);
 
-        if (cachedProduct != null)
-            return cachedProduct;
+        if (product != null)
+            return product;
 
-        Product product = productRepository.findById(productId)
+        product = productRepository.findById(productId)
                 .orElseThrow(() -> new ProductNotFoundException("Product with id (" + productId + ") was not found"));
 
         redisTemplate.opsForValue().set("product:" + productId, product, 10, TimeUnit.MINUTES);
