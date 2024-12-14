@@ -1,8 +1,10 @@
 package com.camperfire.marketflow.controller;
 
 import com.camperfire.marketflow.dto.mapper.CartMapper;
+import com.camperfire.marketflow.dto.mapper.OrderMapper;
 import com.camperfire.marketflow.dto.mapper.ProductMapper;
 import com.camperfire.marketflow.dto.response.CartResponseDTO;
+import com.camperfire.marketflow.dto.response.OrderResponse;
 import com.camperfire.marketflow.dto.response.ProductResponseDTO;
 import com.camperfire.marketflow.model.Cart;
 import com.camperfire.marketflow.model.Order;
@@ -23,12 +25,14 @@ public class CustomerController {
 
     private final CartMapper cartMapper;
     private final ProductMapper productMapper;
+    private final OrderMapper orderMapper;
 
     @Autowired
-    public CustomerController(CustomerService customerService, CartMapper cartMapper, ProductMapper productMapper) {
+    public CustomerController(CustomerService customerService, CartMapper cartMapper, ProductMapper productMapper, OrderMapper orderMapper) {
         this.customerService = customerService;
         this.cartMapper = cartMapper;
         this.productMapper = productMapper;
+        this.orderMapper = orderMapper;
     }
 
     @GetMapping("/cart")
@@ -84,9 +88,9 @@ public class CustomerController {
     }
 
     @PostMapping("/order")
-    public ResponseEntity<String> submitOrder() {
+    public ResponseEntity<OrderResponse> submitOrder() {
         Order order = customerService.order();
 
-        return ResponseEntity.ok("TODO, IMPLEMENT ORDER DTO");
+        return ResponseEntity.ok(orderMapper.toResponse(order));
     }
 }

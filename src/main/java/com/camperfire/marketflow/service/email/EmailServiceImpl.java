@@ -30,8 +30,8 @@ public class EmailServiceImpl implements EmailService {
     public void listen(EmailMessage emailMessage) {
         SimpleMailMessage msg = new SimpleMailMessage();
 
-        msg.setFrom(emailMessage.getFrom());
-        msg.setTo(emailMessage.getTo());
+        msg.setFrom(emailMessage.getSourceEmail());
+        msg.setTo(emailMessage.getDestinationEmail());
         msg.setSubject(emailMessage.getSubject());
         msg.setText(emailMessage.getText());
         emailSender.send(msg);

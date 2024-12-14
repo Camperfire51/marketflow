@@ -8,9 +8,11 @@ import com.camperfire.marketflow.repository.NotificationRepository;
 import com.camperfire.marketflow.specification.NotificationSpecification;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class NotificationServiceImpl implements NotificationService {
 
     private final NotificationRepository notificationRepository;

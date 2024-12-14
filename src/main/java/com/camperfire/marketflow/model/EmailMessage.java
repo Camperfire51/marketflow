@@ -7,10 +7,8 @@ import jakarta.validation.constraints.Email ;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
-import org.springframework.lang.Nullable;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Entity
 @Getter
@@ -26,17 +24,17 @@ public class EmailMessage {
     @Email
     @NotBlank
     @Column(nullable = false)
-    private String from;
+    private String sourceEmail;
 
     @Email
     @NotBlank
     @Column(nullable = false)
-    private String replyTo;
+    private String replyToEmail;
 
     @Email
     @NotBlank
     @Column(nullable = false)
-    private String to;
+    private String destinationEmail;
 
     @NotBlank
     @Size(max = 255)

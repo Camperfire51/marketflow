@@ -33,18 +33,16 @@ public class CustomerServiceImpl implements CustomerService {
     private final CartRepository cartRepository;
 
     private final NotificationService notificationService;
-    private final EmailService emailService;
     private final ProductMapper productMapper;
     private final PaymentService paymentService;
 
-    public CustomerServiceImpl(AuthUserService authUserService, ProductService productService, OrderService orderService, CartRepository cartRepository, NotificationService notificationService, EmailService emailService, ProductMapper productMapper, PaymentService paymentService) {
+    public CustomerServiceImpl(AuthUserService authUserService, ProductService productService, OrderService orderService, CartRepository cartRepository, NotificationService notificationService, ProductMapper productMapper, PaymentService paymentService) {
         this.authUserService = authUserService;
 
         this.productService = productService;
         this.orderService = orderService;
         this.cartRepository = cartRepository;
         this.notificationService = notificationService;
-        this.emailService = emailService;
         this.productMapper = productMapper;
         this.paymentService = paymentService;
     }
@@ -141,18 +139,20 @@ public class CustomerServiceImpl implements CustomerService {
                 throw new NotEnoughProductQuantityException("Not enough stock for product with id: " + productEntry.getKey().getId() + "\n Only have: " + stockQuantity);
         }
 
-        OrderRequest orderRequest = OrderRequest.builder()
-                .customer(getCustomer())
-                .orderDate(LocalDateTime.now())
-                .products(cart.getProducts())
-                .status(OrderStatus.PENDING)
-                .shippingAddress(getCustomer().getAddress())
+        PaymentRequest paymentRequest = PaymentRequest.builder()
+                // TODO: Implement payment request.
                 .build();
-
-        PaymentRequest paymentRequest = PaymentRequest.builder().build();
 
         if (paymentService.processPayment(paymentRequest).getStatus() != PaymentStatus.COMPLETED)
             throw new PaymentException("Payment failed");
+
+        OrderRequest orderRequest = OrderRequest.builder()
+                .customer(getCustomer())
+                .orderDate(LocalDateTime.now())
+                .cart(cart)
+                .status(OrderStatus.PENDING)
+                .shippingAddress(getCustomer().getAddress())
+                .build();
 
         Order order = orderService.createOrder(orderRequest);
 

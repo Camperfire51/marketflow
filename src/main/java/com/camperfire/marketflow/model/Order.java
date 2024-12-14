@@ -14,6 +14,7 @@ import java.util.Map;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Table(name = "orders")
 public class Order {
 
     @Id

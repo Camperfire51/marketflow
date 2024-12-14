@@ -1,11 +1,9 @@
 package com.camperfire.marketflow.dto.response;
 
 import com.camperfire.marketflow.model.Address;
+import com.camperfire.marketflow.model.Cart;
 import com.camperfire.marketflow.model.OrderStatus;
-import com.camperfire.marketflow.model.Product;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -23,9 +21,8 @@ public class OrderResponse {
     @NotNull(message = "Customer ID is required")
     private Long customerId;
 
-    @NotEmpty(message = "Order must contain at least one product")
-    private Map<@NotNull(message = "Product ID is required") Product,
-            @Positive(message = "Quantity must be a positive value") Long> products;
+    @NotNull(message = "Cart cannot be null")
+    private Cart cart;
 
     private LocalDateTime orderDate;
 
