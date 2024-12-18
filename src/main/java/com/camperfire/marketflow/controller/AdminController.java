@@ -3,11 +3,14 @@ package com.camperfire.marketflow.controller;
 import com.camperfire.marketflow.dto.mapper.CategoryMapper;
 import com.camperfire.marketflow.dto.mapper.ProductMapper;
 import com.camperfire.marketflow.dto.request.CategoryRequestDTO;
+import com.camperfire.marketflow.dto.request.NotificationRequest;
 import com.camperfire.marketflow.dto.response.CategoryResponseDTO;
+import com.camperfire.marketflow.dto.response.NotificationResponse;
 import com.camperfire.marketflow.dto.response.ProductResponseDTO;
 import com.camperfire.marketflow.model.Category;
 import com.camperfire.marketflow.model.Product;
 import com.camperfire.marketflow.model.ProductStatus;
+import com.camperfire.marketflow.service.notification.NotificationService;
 import com.camperfire.marketflow.service.user.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -54,7 +57,7 @@ public class AdminController {
     }
 
     @PutMapping("/product-status")
-    public ResponseEntity<Void> setProductStatus(
+    public ResponseEntity<String> setProductStatus(
             @RequestParam Long productId,
             @RequestParam(value = "status") ProductStatus status) {
 
@@ -83,6 +86,8 @@ public class AdminController {
 
         return ResponseEntity.ok().build();
     }
+
+
 
 
 }

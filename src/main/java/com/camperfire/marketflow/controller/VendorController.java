@@ -6,7 +6,7 @@ import com.camperfire.marketflow.dto.response.ProductResponseDTO;
 import com.camperfire.marketflow.model.Product;
 import com.camperfire.marketflow.model.ProductStatus;
 import com.camperfire.marketflow.service.user.VendorService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,18 +14,13 @@ import org.springframework.web.bind.annotation.*;
 import java.math.BigDecimal;
 import java.util.List;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/vendor")
 public class VendorController {
 
     private final VendorService vendorService;
     private final ProductMapper productMapper;
-
-    @Autowired
-    public VendorController(VendorService vendorService, ProductMapper productMapper) {
-        this.vendorService = vendorService;
-        this.productMapper = productMapper;
-    }
 
     @GetMapping("/products")
     public ResponseEntity<List<ProductResponseDTO>> getProducts(

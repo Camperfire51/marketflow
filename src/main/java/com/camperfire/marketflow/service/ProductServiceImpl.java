@@ -8,6 +8,7 @@ import com.camperfire.marketflow.model.Product;
 import com.camperfire.marketflow.model.ProductStatus;
 import com.camperfire.marketflow.repository.ProductRepository;
 import com.camperfire.marketflow.specification.ProductSpecification;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -17,6 +18,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+@Slf4j
 @Service
 public class ProductServiceImpl implements ProductService {
 
@@ -34,6 +36,8 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<Product> getProducts(String name, BigDecimal minPrice, BigDecimal maxPrice, String categoryPath, Long vendorId, ProductStatus status) {
         Specification<Product> spec = Specification.where(null);
+
+        //TODO:
 
         // Add name filter if provided
         if (name != null && !name.isEmpty()) {
@@ -96,15 +100,15 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product readProduct(Long productId){
-        Product product = (Product) redisTemplate.opsForValue().get("product:" + productId);
 
+        Product product = (Product) redisTemplate.opsForValue().get("product:" + productId);
         if (product != null)
             return product;
 
         product = productRepository.findById(productId)
                 .orElseThrow(() -> new ProductNotFoundException("Product with id (" + productId + ") was not found"));
 
-        redisTemplate.opsForValue().set("product:" + productId, product, 10, TimeUnit.MINUTES);
+        //redisTemplate.opsForValue().set("product:" + productId, product, 10, TimeUnit.MINUTES); //TODO: Instead of caching entities, cache DTOs.
 
         return product;
     }

@@ -12,7 +12,6 @@ import com.camperfire.marketflow.model.user.Vendor;
 import com.camperfire.marketflow.repository.AuthUserRepository;
 import com.camperfire.marketflow.repository.user.CustomerRepository;
 import com.camperfire.marketflow.repository.user.VendorRepository;
-import com.camperfire.marketflow.service.email.EmailServiceProducer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -31,20 +30,16 @@ public class AuthUserService {
     private final CustomerRepository customerRepository;
     private final VendorRepository vendorRepository;
 
-    private final EmailServiceProducer emailServiceProducer;
-
     private final JWTService jwtService;
     private final AuthenticationManager authManager;
     private final BCryptPasswordEncoder encoder;
 
     @Autowired
-    public AuthUserService(AuthUserRepository authUserRepository, CustomerRepository customerRepository, VendorRepository vendorRepository, EmailServiceProducer emailServiceProducer, JWTService jwtService, AuthenticationManager authManager) {
+    public AuthUserService(AuthUserRepository authUserRepository, CustomerRepository customerRepository, VendorRepository vendorRepository, JWTService jwtService, AuthenticationManager authManager) {
         this.authUserRepository = authUserRepository;
 
         this.customerRepository = customerRepository;
         this.vendorRepository = vendorRepository;
-
-        this.emailServiceProducer = emailServiceProducer;
 
         this.jwtService = jwtService;
         this.authManager = authManager;
