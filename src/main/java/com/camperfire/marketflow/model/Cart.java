@@ -19,11 +19,11 @@ public class Cart {
     private Long id;
 
     @OneToOne(mappedBy = "cart", fetch = FetchType.LAZY)
-    private Customer customer;
+    private Customer  customer;
 
     @ElementCollection(fetch = FetchType.LAZY) //TODO: Eager ve Lazy arasındaki fark.
     @CollectionTable(name = "cart_items", joinColumns = @JoinColumn(name = "cart_id"))
     @MapKeyJoinColumn(name = "product_id")
     @Column(name = "quantity")
-    private Map<Product, Long> products = new HashMap<>();
+    private Map<Product, Long> products = new HashMap<>(); //TODO: Replace Product with product id. Since Hashcode is not implemented in products, map will be wrong each time products are loaded from the database.
 }

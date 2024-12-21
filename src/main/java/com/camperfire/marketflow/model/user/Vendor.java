@@ -13,7 +13,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
-public class Vendor extends BaseUser {
+public class Vendor extends User {
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
     private Set<Product> products;

@@ -1,6 +1,6 @@
 package com.camperfire.marketflow.model;
 
-import com.camperfire.marketflow.model.user.BaseUser;
+import com.camperfire.marketflow.model.user.User;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -17,7 +17,7 @@ public class Notification {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
-    private BaseUser user;
+    private User user;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

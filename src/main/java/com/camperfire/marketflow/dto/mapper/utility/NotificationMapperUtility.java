@@ -1,10 +1,8 @@
 package com.camperfire.marketflow.dto.mapper.utility;
 
-import com.camperfire.marketflow.model.user.BaseUser;
 import com.camperfire.marketflow.repository.user.AdminRepository;
 import com.camperfire.marketflow.repository.user.CustomerRepository;
 import com.camperfire.marketflow.repository.user.VendorRepository;
-import org.mapstruct.Named;
 import org.springframework.stereotype.Component;
 
 @Component

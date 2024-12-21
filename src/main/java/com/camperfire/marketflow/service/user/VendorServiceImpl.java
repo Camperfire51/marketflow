@@ -25,7 +25,7 @@ public class VendorServiceImpl implements VendorService {
     }
 
     @Override
-    public Vendor getVendor() { return (Vendor) authUserService.getAuthUser().getBaseUser(); }
+    public Vendor getVendor() { return (Vendor) authUserService.getAuthUser().getUser(); }
 
     @Override
     public List<Product> getProducts(String name, BigDecimal minPrice, BigDecimal maxPrice, String categoryPath, Long vendorId, ProductStatus status) {

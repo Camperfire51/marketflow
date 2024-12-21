@@ -9,7 +9,7 @@ import lombok.experimental.SuperBuilder;
 @Setter
 @AllArgsConstructor
 @SuperBuilder
-public class Admin extends BaseUser {
+public class Admin extends User {
 
 
 }

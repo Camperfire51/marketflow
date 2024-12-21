@@ -10,11 +10,10 @@ import com.camperfire.marketflow.exception.PaymentException;
 import com.camperfire.marketflow.exception.ProductNotFoundException;
 import com.camperfire.marketflow.exception.ProductOutOfStocksException;
 import com.camperfire.marketflow.model.*;
-import com.camperfire.marketflow.model.user.BaseUser;
+import com.camperfire.marketflow.model.user.User;
 import com.camperfire.marketflow.model.user.Customer;
 import com.camperfire.marketflow.repository.CartRepository;
 import com.camperfire.marketflow.service.*;
-import com.camperfire.marketflow.service.email.EmailService;
 import com.camperfire.marketflow.service.notification.NotificationService;
 import org.springframework.stereotype.Service;
 
@@ -48,7 +47,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public Customer getCustomer() { return (Customer) authUserService.getAuthUser().getBaseUser(); }
+    public Customer getCustomer() { return (Customer) authUserService.getAuthUser().getUser(); }
 
     @Override
     public Cart getCart() {
@@ -168,7 +167,7 @@ public class CustomerServiceImpl implements CustomerService {
 
             productService.updateProduct(product.getId(), productRequestDTO);
 
-            BaseUser vendor = product.getVendor();
+            User vendor = product.getVendor();
 
             if (newQuantity < product.getRestockAlarmQuantity()){
                 NotificationRequest notificationRequest = NotificationRequest.builder()
@@ -179,7 +178,7 @@ public class CustomerServiceImpl implements CustomerService {
 
                 notificationService.createNotification(notificationRequest);
 
-                BaseUser customer = getCustomer();
+                User customer = getCustomer();
             }
         }
 

@@ -18,7 +18,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
-public abstract class BaseUser {
+public abstract class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     protected Long id;

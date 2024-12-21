@@ -1,6 +1,6 @@
 package com.camperfire.marketflow.model;
 
-import com.camperfire.marketflow.model.user.BaseUser;
+import com.camperfire.marketflow.model.user.User;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -25,5 +25,5 @@ public class AuthUser {
     @Enumerated(EnumType.STRING)
     private UserRole userRole;
     @OneToOne(mappedBy = "authUser", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private BaseUser baseUser;
+    private User user;
 }

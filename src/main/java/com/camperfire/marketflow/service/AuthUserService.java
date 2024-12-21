@@ -139,7 +139,7 @@ public class AuthUserService {
         if (authUser == null)
             return false;
 
-        authUser.getBaseUser().setStatus(UserStatus.APPROVED);
+        authUser.getUser().setStatus(UserStatus.APPROVED);
 
         authUserRepository.save(authUser);
 

@@ -33,7 +33,7 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public Admin getAdmin(){
-        return (Admin) authUserService.getAuthUser().getBaseUser();
+        return (Admin) authUserService.getAuthUser().getUser();
     }
 
     @Override
