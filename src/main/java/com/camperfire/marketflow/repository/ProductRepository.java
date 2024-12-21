@@ -24,7 +24,7 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
             + "(:name IS NULL OR p.name LIKE %:name%) AND "
             + "(:minPrice IS NULL OR p.basePrice >= :minPrice) AND "
             + "(:maxPrice IS NULL OR p.basePrice <= :maxPrice) AND "
-            + "(:categoryPath IS NULL OR p.category.path LIKE %:categoryPath%) AND "
+            + "(:categoryPath IS NULL OR p.category.fullName LIKE %:categoryPath%) AND "
             + "(:vendorId IS NULL OR p.vendor.id = :vendorId) AND "
             + "(:status IS NULL OR p.status = :status)")
     List<Product> findProductsWithFilters(
