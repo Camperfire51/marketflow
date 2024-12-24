@@ -40,11 +40,5 @@ public class Product {
     private Vendor vendor;
 
     @Column(nullable = false)
-    private Long quantity;
-
-    @Column(nullable = false)
-    private Long restockAlarmQuantity;
-
-    @Column(nullable = false)
     private ProductStatus status;
 }

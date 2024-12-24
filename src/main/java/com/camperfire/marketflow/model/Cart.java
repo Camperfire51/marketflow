@@ -25,5 +25,5 @@ public class Cart {
     @CollectionTable(name = "cart_items", joinColumns = @JoinColumn(name = "cart_id"))
     @MapKeyJoinColumn(name = "product_id")
     @Column(name = "quantity")
-    private Map<Product, Long> products = new HashMap<>(); //TODO: Replace Product with product id. Since Hashcode is not implemented in products, map will be wrong each time products are loaded from the database.
+    private Map<Long, Long> products = new HashMap<>();
 }

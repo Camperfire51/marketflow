@@ -1,9 +1,8 @@
 package com.camperfire.marketflow.controller;
 
-import com.camperfire.marketflow.dto.request.LoginRequest;
+import com.camperfire.marketflow.dto.logic.login.LoginRequest;
 import com.camperfire.marketflow.dto.request.RegisterRequest;
 import com.camperfire.marketflow.dto.response.LoginResponse;
-import com.camperfire.marketflow.dto.response.RegisterResponse;
 import com.camperfire.marketflow.service.AuthUserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

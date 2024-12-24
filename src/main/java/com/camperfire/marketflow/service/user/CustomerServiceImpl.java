@@ -3,7 +3,7 @@ package com.camperfire.marketflow.service.user;
 import com.camperfire.marketflow.dto.mapper.ProductMapper;
 import com.camperfire.marketflow.dto.request.NotificationRequest;
 import com.camperfire.marketflow.dto.request.OrderRequest;
-import com.camperfire.marketflow.dto.request.PaymentRequest;
+import com.camperfire.marketflow.dto.crud.payment.PaymentRequest;
 import com.camperfire.marketflow.dto.request.ProductRequestDTO;
 import com.camperfire.marketflow.exception.NotEnoughProductQuantityException;
 import com.camperfire.marketflow.exception.PaymentException;
@@ -15,6 +15,10 @@ import com.camperfire.marketflow.model.user.Customer;
 import com.camperfire.marketflow.repository.CartRepository;
 import com.camperfire.marketflow.service.*;
 import com.camperfire.marketflow.service.notification.NotificationService;
+import com.camperfire.marketflow.service.order.OrderService;
+import com.camperfire.marketflow.service.payment.PaymentService;
+import com.camperfire.marketflow.service.product.ProductService;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -63,6 +67,7 @@ public class CustomerServiceImpl implements CustomerService {
         return productService.readProduct(productId);
     }
 
+    @Cacheable(value = "products")
     @Override
     public List<Product> getProducts(String name, BigDecimal minPrice, BigDecimal maxPrice, String category, Long vendorId){
         return productService.getProducts(name, minPrice, maxPrice, category, vendorId, ProductStatus.PUBLISHED);
@@ -82,15 +87,15 @@ public class CustomerServiceImpl implements CustomerService {
 
         Cart cart = getCart();
 
-        Map<Product, Long> products = cart.getProducts();
+        Map<Long, Long> products = cart.getProducts();
 
         if (products.containsKey(product)){
             Long currentQuantity = products.get(product);
             Long newQuantity = currentQuantity + quantity;
-            products.put(product, newQuantity);
+            products.put(product.getId(), newQuantity);
         }
         else {
-            products.put(product, quantity);
+            products.put(product.getId(), quantity);
         }
 
         return cartRepository.save(cart);
@@ -104,15 +109,15 @@ public class CustomerServiceImpl implements CustomerService {
 
         Cart cart = customer.getCart();
 
-        Map<Product, Long> products = cart.getProducts();
+        Map<Long, Long> products = cart.getProducts();
 
-        if (!products.containsKey(product))
+        if (!products.containsKey(product.getId()))
             throw new ProductNotFoundException("Product with id (" + productId + ") was not found in the cart.");
 
-        Long currentQuantity = products.get(product);
+        Long currentQuantity = products.get(product.getId());
         Long newQuantity = currentQuantity - quantity > 0 ? currentQuantity : quantity;
 
-        products.put(product, newQuantity);
+        products.put(product.getId(), newQuantity);
         return cartRepository.save(cart);
     }
 
@@ -129,13 +134,14 @@ public class CustomerServiceImpl implements CustomerService {
     public Order order() {
         Cart cart = getCart();
 
-        for (Map.Entry<Product, Long> productEntry : cart.getProducts().entrySet()) {
-            Product product = productEntry.getKey();
+        for (Map.Entry<Long, Long> productEntry : cart.getProducts().entrySet()) {
+            Long productId = productEntry.getKey();
+            Product product = productService.readProduct(productId);
             Long requestedQuantity = productEntry.getValue();
             Long stockQuantity = product.getQuantity();
 
             if (stockQuantity < requestedQuantity)
-                throw new NotEnoughProductQuantityException("Not enough stock for product with id: " + productEntry.getKey().getId() + "\n Only have: " + stockQuantity);
+                throw new NotEnoughProductQuantityException("Not enough stock for productId: " + product.getId() + "\n Only have: " + stockQuantity);
         }
 
         PaymentRequest paymentRequest = PaymentRequest.builder()
@@ -155,8 +161,9 @@ public class CustomerServiceImpl implements CustomerService {
 
         Order order = orderService.createOrder(orderRequest);
 
-        for (Map.Entry<Product, Long> productEntry : cart.getProducts().entrySet()) {
-            Product product = productEntry.getKey();
+        for (Map.Entry<Long, Long> productEntry : cart.getProducts().entrySet()) {
+            Long productId = productEntry.getKey();
+            Product product = productService.readProduct(productId);
             Long requestedQuantity = productEntry.getValue();
             Long stockQuantity = product.getQuantity();
             Long newQuantity = stockQuantity - requestedQuantity;

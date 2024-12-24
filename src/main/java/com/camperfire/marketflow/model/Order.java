@@ -27,9 +27,8 @@ public class Order {
 
     @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(name = "cart_items", joinColumns = @JoinColumn(name = "cart_id"))
-    @MapKeyJoinColumn(name = "product_id")
     @Column(name = "quantity")
-    private Map<Product, Long> products = new HashMap<>();
+    private Map<Long, Long> products = new HashMap<>();
 
     private LocalDateTime orderDate;
 

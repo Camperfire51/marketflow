@@ -1,6 +1,6 @@
 package com.camperfire.marketflow.service.notification;
 
-import com.camperfire.marketflow.dto.request.NotificationRequest;
+import com.camperfire.marketflow.dto.crud.notification.NotificationRequest;
 import com.camperfire.marketflow.model.Notification;
 import com.camperfire.marketflow.model.NotificationType;
 
@@ -10,11 +10,11 @@ public interface NotificationService {
 
     List<Notification> getNotifications(Long userId, NotificationType type, Boolean isRead);
 
-    Notification createNotification(NotificationRequest notificationRequest);
+    Notification createNotification(NotificationRequest request);
 
-    Notification readNotification(Long notificationId);
+    Notification readNotification(NotificationReadRequest request);
 
-    Notification updateNotification(Long notificationId, NotificationRequest notificationRequest);
+    Notification updateNotification(NotificationUpdateRequest request);
 
-    void deleteNotification(Long notificationId);
+    void deleteNotification(NotificationDeleteRequest);
 }

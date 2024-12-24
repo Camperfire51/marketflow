@@ -1,16 +1,14 @@
 package com.camperfire.marketflow.controller;
 
+import com.camperfire.marketflow.dto.crud.category.CategoryRequest;
 import com.camperfire.marketflow.dto.mapper.CategoryMapper;
 import com.camperfire.marketflow.dto.mapper.ProductMapper;
-import com.camperfire.marketflow.dto.request.CategoryRequestDTO;
-import com.camperfire.marketflow.dto.request.NotificationRequest;
+
 import com.camperfire.marketflow.dto.response.CategoryResponseDTO;
-import com.camperfire.marketflow.dto.response.NotificationResponse;
 import com.camperfire.marketflow.dto.response.ProductResponseDTO;
 import com.camperfire.marketflow.model.Category;
 import com.camperfire.marketflow.model.Product;
 import com.camperfire.marketflow.model.ProductStatus;
-import com.camperfire.marketflow.service.notification.NotificationService;
 import com.camperfire.marketflow.service.user.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -74,8 +72,8 @@ public class AdminController {
     }
 
     @PostMapping("/category")
-    public ResponseEntity<CategoryResponseDTO> createCategory(@RequestBody CategoryRequestDTO categoryRequestDTO){
-        Category category = adminService.createCategory(categoryRequestDTO);
+    public ResponseEntity<CategoryResponseDTO> createCategory(@RequestBody CategoryRequest categoryRequest){
+        Category category = adminService.createCategory(categoryRequest);
 
         return ResponseEntity.ok(categoryMapper.toResponse(category));
     }

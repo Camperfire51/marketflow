@@ -1,10 +1,8 @@
 package com.camperfire.marketflow.dto.mapper;
 
-import com.camperfire.marketflow.dto.request.CategoryRequestDTO;
+import com.camperfire.marketflow.dto.crud.category.CategoryRequest;
 import com.camperfire.marketflow.dto.response.CategoryResponseDTO;
-import com.camperfire.marketflow.dto.response.ProductResponseDTO;
 import com.camperfire.marketflow.model.Category;
-import com.camperfire.marketflow.model.Product;
 import org.mapstruct.Mapper;
 
 import java.util.List;
@@ -12,9 +10,9 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface CategoryMapper {
 
-    Category toEntity(CategoryRequestDTO categoryRequestDTO);
+    Category toEntity(CategoryRequest request);
 
-    CategoryResponseDTO toResponse(Category category);
+    CategoryResponseDTO toResponse(Category entity);
 
     List<CategoryResponseDTO> toResponseList(List<Category> entities);
 }

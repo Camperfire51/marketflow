@@ -23,13 +23,8 @@ public abstract class User {
     @GeneratedValue(strategy = GenerationType.AUTO)
     protected Long id;
 
-    protected LocalDateTime createdDate;
-
     @Embedded
     protected Address address;
-
-    @Enumerated(EnumType.STRING)
-    protected UserStatus status;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "auth_user_id", referencedColumnName = "id")
@@ -38,4 +33,8 @@ public abstract class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Notification> notifications;
 
+    @Enumerated(EnumType.STRING)
+    protected UserStatus status;
+
+    protected LocalDateTime createdDate;
 }

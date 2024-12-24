@@ -1,14 +1,15 @@
 package com.camperfire.marketflow.service.user;
 
+import com.camperfire.marketflow.dto.crud.category.CategoryRequest;
 import com.camperfire.marketflow.dto.mapper.CategoryMapper;
-import com.camperfire.marketflow.dto.request.CategoryRequestDTO;
+
 import com.camperfire.marketflow.model.Category;
 import com.camperfire.marketflow.model.Product;
 import com.camperfire.marketflow.model.ProductStatus;
 import com.camperfire.marketflow.model.user.Admin;
 import com.camperfire.marketflow.repository.CategoryRepository;
 import com.camperfire.marketflow.service.AuthUserService;
-import com.camperfire.marketflow.service.ProductService;
+import com.camperfire.marketflow.service.product.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -57,9 +58,9 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public Category createCategory(CategoryRequestDTO categoryRequestDTO) {
+    public Category createCategory(CategoryRequest categoryRequest) {
 
-        Category category = categoryMapper.toEntity(categoryRequestDTO);
+        Category category = categoryMapper.toEntity(categoryRequest);
 
         return categoryRepository.save(category);
     }

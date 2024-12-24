@@ -20,8 +20,8 @@ public class UserPrincipal implements UserDetails {
         return Collections.singleton(new SimpleGrantedAuthority(authUser.getUserRole().name()));
     }
 
-    public Long getId() {
-        return authUser.getId();
+    public AuthUser getAuthUser() {
+        return authUser;
     }
 
     @Override

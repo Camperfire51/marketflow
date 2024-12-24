@@ -3,7 +3,7 @@ package com.camperfire.marketflow.controller;
 import com.camperfire.marketflow.dto.mapper.CartMapper;
 import com.camperfire.marketflow.dto.mapper.OrderMapper;
 import com.camperfire.marketflow.dto.mapper.ProductMapper;
-import com.camperfire.marketflow.dto.response.CartResponseDTO;
+import com.camperfire.marketflow.dto.response.CartResponse;
 import com.camperfire.marketflow.dto.response.OrderResponse;
 import com.camperfire.marketflow.dto.response.ProductResponseDTO;
 import com.camperfire.marketflow.model.Cart;
@@ -36,7 +36,7 @@ public class CustomerController {
     }
 
     @GetMapping("/cart")
-    public ResponseEntity<CartResponseDTO> getCart() {
+    public ResponseEntity<CartResponse> getCart() {
         Cart cart = customerService.getCart();
         return ResponseEntity.ok(cartMapper.toResponse(cart));
     }
@@ -55,7 +55,7 @@ public class CustomerController {
     }
 
     @PostMapping("/cart")
-    public ResponseEntity<CartResponseDTO> addProductToCart(
+    public ResponseEntity<CartResponse> addProductToCart(
             @RequestParam(value = "productId") Long productId,
             @RequestParam(value = "quantity") Long quantity) {
 
@@ -67,7 +67,7 @@ public class CustomerController {
     }
 
     @DeleteMapping("/cart")
-    public ResponseEntity<CartResponseDTO> removeProductFromCart(
+    public ResponseEntity<CartResponse> removeProductFromCart(
             @RequestParam(value = "productId") Long productId,
             @RequestParam(value = "quantity") Long quantity) {
 
@@ -79,7 +79,7 @@ public class CustomerController {
     }
 
     @PutMapping("/reset-cart")
-    public ResponseEntity<CartResponseDTO> resetCart() {
+    public ResponseEntity<CartResponse> resetCart() {
         customerService.resetCart();
 
         Cart cart = customerService.getCart();

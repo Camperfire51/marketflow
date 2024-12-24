@@ -6,7 +6,7 @@ import com.camperfire.marketflow.model.Product;
 import com.camperfire.marketflow.model.ProductStatus;
 import com.camperfire.marketflow.model.user.Vendor;
 import com.camperfire.marketflow.service.AuthUserService;
-import com.camperfire.marketflow.service.ProductService;
+import com.camperfire.marketflow.service.product.ProductService;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;

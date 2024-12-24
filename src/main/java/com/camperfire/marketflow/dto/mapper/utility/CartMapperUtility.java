@@ -13,12 +13,6 @@ import java.util.Map;
 @Component
 public class CartMapperUtility {
 
-    private final ProductMapper productMapper;
-
-    public CartMapperUtility(ProductMapper productMapper) {
-        this.productMapper = productMapper;
-    }
-
     @Named("calculateTotalBasePrice")
     public BigDecimal calculateTotalBasePrice(Map<Product, Long> products) {
         return products.entrySet().stream()
@@ -37,14 +31,5 @@ public class CartMapperUtility {
                     return discountAmount.multiply(BigDecimal.valueOf(entry.getValue()));
                 })
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
-    }
-
-    @Named("mapProducts")
-    public Map<ProductResponseDTO, Long> mapProducts(Map<Product, Long> products) {
-        Map<ProductResponseDTO, Long> mappedProducts = new HashMap<>();
-        for (Map.Entry<Product, Long> entry : products.entrySet()) {
-            mappedProducts.put(productMapper.toResponse(entry.getKey()), entry.getValue());
-        }
-        return mappedProducts;
     }
 }

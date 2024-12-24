@@ -1,6 +1,6 @@
 package com.camperfire.marketflow.service.user;
 
-import com.camperfire.marketflow.dto.request.CategoryRequestDTO;
+import com.camperfire.marketflow.dto.crud.category.CategoryRequest;
 import com.camperfire.marketflow.model.Category;
 import com.camperfire.marketflow.model.Product;
 import com.camperfire.marketflow.model.ProductStatus;
@@ -21,7 +21,7 @@ public interface AdminService {
 
     List<Category> getCategories();
 
-    Category createCategory(CategoryRequestDTO categoryRequestDTO);
+    Category createCategory(CategoryRequest categoryRequest);
 
     void deleteCategory(Long categoryId);
 }

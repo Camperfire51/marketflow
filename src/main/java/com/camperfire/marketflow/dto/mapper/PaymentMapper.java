@@ -1,6 +1,6 @@
 package com.camperfire.marketflow.dto.mapper;
 
-import com.camperfire.marketflow.dto.request.PaymentRequest;
+import com.camperfire.marketflow.dto.crud.payment.PaymentRequest;
 import com.camperfire.marketflow.dto.response.PaymentResponse;
 import com.camperfire.marketflow.model.Payment;
 import org.mapstruct.Mapper;
