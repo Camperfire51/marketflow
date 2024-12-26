@@ -1,8 +1,8 @@
 package com.camperfire.marketflow.service.invoice;
 
+import com.camperfire.marketflow.dto.crud.invoice.InvoiceRequest;
 import com.camperfire.marketflow.dto.mapper.InvoiceMapper;
 import com.camperfire.marketflow.model.EmailMessage;
-import com.camperfire.marketflow.model.Order;
 import com.camperfire.marketflow.model.Invoice;
 import com.camperfire.marketflow.repository.InvoiceRepository;
 import com.camperfire.marketflow.service.email.EmailService;
@@ -38,14 +38,18 @@ public class InvoiceServiceImpl implements InvoiceService {
     }
 
     @Override
-    public Invoice updateInvoice(Long id, InvoiceRequest invoiceRequest){
-        Invoice invoice = invoiceMapper.toEntity(invoiceRequest);
-        invoice.setId(id);
-        return invoiceRepository.save(invoice);
+    public Invoice updateInvoice(InvoiceRequest request) {
+        Invoice Invoice = invoiceRepository.findById(request.getId()).orElseThrow();
+
+        //TODO: Implement update logic.
+
+        return invoiceRepository.save(Invoice);
     }
 
     @Override
-    public void deleteInvoice(Order order){
-        invoiceRepository.deleteById(order.getId());
+    public void deleteInvoice(Long id) {
+        Invoice Invoice = invoiceRepository.findById(id).orElseThrow();
+
+        invoiceRepository.delete(Invoice);
     }
 }

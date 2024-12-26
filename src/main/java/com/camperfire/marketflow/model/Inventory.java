@@ -20,7 +20,7 @@ public class Inventory {
     private Product product;
 
     @Column(nullable = false)
-    private Long quantity;
+    private Long stock;
 
     @Column(nullable = false)
     private Long restockAlarmQuantity;

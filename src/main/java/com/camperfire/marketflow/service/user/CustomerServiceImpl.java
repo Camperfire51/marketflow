@@ -14,6 +14,7 @@ import com.camperfire.marketflow.model.user.User;
 import com.camperfire.marketflow.model.user.Customer;
 import com.camperfire.marketflow.repository.CartRepository;
 import com.camperfire.marketflow.service.*;
+import com.camperfire.marketflow.service.authUser.AuthUserService;
 import com.camperfire.marketflow.service.notification.NotificationService;
 import com.camperfire.marketflow.service.order.OrderService;
 import com.camperfire.marketflow.service.payment.PaymentService;

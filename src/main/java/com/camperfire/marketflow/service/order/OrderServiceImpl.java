@@ -1,7 +1,9 @@
 package com.camperfire.marketflow.service.order;
 
+import com.camperfire.marketflow.dto.crud.invoice.InvoiceRequest;
 import com.camperfire.marketflow.dto.mapper.OrderMapper;
 import com.camperfire.marketflow.dto.crud.order.OrderRequest;
+import com.camperfire.marketflow.model.EmailMessage;
 import com.camperfire.marketflow.model.Order;
 import com.camperfire.marketflow.repository.OrderRepository;
 import com.camperfire.marketflow.service.invoice.InvoiceService;
@@ -24,7 +26,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Order createOrder(OrderRequest request) {
-        Order order = orderMapper.toEntity(orderRequest);
+        Order order = orderMapper.toEntity(request);
 
         InvoiceRequest invoiceRequest = InvoiceRequest.builder().build();
 
@@ -34,20 +36,23 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Order readOrder(OrderReadRequest request) {
-        return orderRepository.findById(orderId).orElseThrow();
+    public Order readOrder(Long id) {
+        return orderRepository.findById(id).orElseThrow();
     }
 
     @Override
-    public Order updateOrder(OrderUpdateRequest request) {
-        Order order = orderMapper.toEntity(orderRequest);
-        order.setId(orderId);
+    public Order updateOrder(OrderRequest request) {
+        Order order = orderRepository.findById(request.getId()).orElseThrow();
+
+        //TODO: Implement update logic.
+
         return orderRepository.save(order);
     }
 
     @Override
-    public void deleteOrder(OrderDeleteRequest request) {
-        Order order = orderRepository.findById(orderId).orElseThrow();
+    public void deleteOrder(Long id) {
+        Order order = orderRepository.findById(id).orElseThrow();
+
         orderRepository.delete(order);
     }
 }

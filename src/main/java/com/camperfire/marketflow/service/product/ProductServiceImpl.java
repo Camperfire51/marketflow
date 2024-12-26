@@ -1,24 +1,24 @@
 package com.camperfire.marketflow.service.product;
 
+import com.camperfire.marketflow.dto.crud.product.ProductRequest;
 import com.camperfire.marketflow.dto.mapper.ProductMapper;
-import com.camperfire.marketflow.dto.request.ProductRequestDTO;
-import com.camperfire.marketflow.exception.NotImplementedException;
-import com.camperfire.marketflow.exception.ProductNotFoundException;
 import com.camperfire.marketflow.model.Product;
 import com.camperfire.marketflow.model.ProductStatus;
+import com.camperfire.marketflow.model.UserPrincipal;
+import com.camperfire.marketflow.model.user.Vendor;
 import com.camperfire.marketflow.repository.ProductRepository;
 import com.camperfire.marketflow.specification.ProductSpecification;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
 
-@Slf4j
 @Service
 public class ProductServiceImpl implements ProductService {
 
@@ -37,7 +37,7 @@ public class ProductServiceImpl implements ProductService {
     public List<Product> getProducts(String name, BigDecimal minPrice, BigDecimal maxPrice, String categoryPath, Long vendorId, ProductStatus status) {
         Specification<Product> spec = Specification.where(null);
 
-        //TODO:
+        //TODO: Instead of if chain, use JPA queries.
 
         // Add name filter if provided
         if (name != null && !name.isEmpty()) {
@@ -71,6 +71,7 @@ public class ProductServiceImpl implements ProductService {
         return productRepository.findAll(spec);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Override
     public void setProductStatus(Long productId, ProductStatus status) {
         Product product = readProduct(productId);
@@ -78,6 +79,7 @@ public class ProductServiceImpl implements ProductService {
         productRepository.save(product);
     }
 
+    @PreAuthorize("hasRole('VENDOR')")
     @Override
     public void setProductDiscount(Long productId, BigDecimal newDiscount) {
         Product product = readProduct(productId);
@@ -92,45 +94,42 @@ public class ProductServiceImpl implements ProductService {
     // This way, it is "soft deleted", and can be undone by the authority.
 
     @Override
-    public Product createProduct(ProductRequestDTO productRequestDTO){
-        Product product = productMapper.toEntity(productRequestDTO);
+    public Product createProduct(ProductRequest request){
+
+        UserPrincipal userPrincipal = (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        Vendor vendor = (Vendor) userPrincipal.getAuthUser().getUser();
+
+        Product product = productMapper.toEntity(request);
+
         product.setStatus(ProductStatus.PENDING);
+
+        product.setVendor(vendor);
+
         return productRepository.save(product);
     }
 
-    @Cacheable(value = "products", key = "#productId")
+    @Cacheable(value = "products", key = "#id")
     @Override
-    public Product readProduct(Long productId){
-
-        Product product = (Product) redisTemplate.opsForValue().get("product:" + productId);
-        if (product != null)
-            return product;
-
-        product = productRepository.findById(productId)
-                .orElseThrow(() -> new ProductNotFoundException("Product with id (" + productId + ") was not found"));
-
-        //redisTemplate.opsForValue().set("product:" + productId, product, 10, TimeUnit.MINUTES); //TODO: Instead of caching entities, cache DTOs.
-
-        return product;
+    public Product readProduct(Long id){
+        return productRepository.findById(id).orElseThrow();
     }
 
     @Override
-    public Product updateProduct(Long productId, ProductRequestDTO productRequestDTO){
-        Product product = productMapper.toEntity(productRequestDTO);
+    public Product updateProduct(ProductRequest request){
+        Product product = productRepository.findById(request.getId()).orElseThrow();
+
+        //TODO: Implement update logic.
         product.setStatus(ProductStatus.PENDING);
-        product.setId(productId);
+        //TODO: Implement update logic.
+
         return productRepository.save(product);
     }
 
     @Override
-    public void deleteProduct(Long productId) {
-        throw new NotImplementedException("Hard delete is not supported");
+    public void deleteProduct(Long id) {
+        Product product = productRepository.findById(id).orElseThrow();
 
-//        if (!productRepository.existsById(productId))
-//            throw new ProductNotFoundException("Product with id (" + productId + ") was not found");
-//
-//        productRepository.deleteById(productId);
-//
-//        redisTemplate.delete("product:" + productId);
+        productRepository.delete(product);
     }
 }

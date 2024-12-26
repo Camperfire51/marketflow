@@ -1,6 +1,6 @@
 package com.camperfire.marketflow.service.product;
 
-import com.camperfire.marketflow.dto.request.ProductRequestDTO;
+import com.camperfire.marketflow.dto.crud.product.ProductRequest;
 import com.camperfire.marketflow.model.Product;
 import com.camperfire.marketflow.model.ProductStatus;
 
@@ -15,11 +15,11 @@ public interface ProductService {
 
     void setProductDiscount(Long productId, BigDecimal newDiscount);
 
-    Product createProduct(ProductRequestDTO productRequestDTO);
+    Product createProduct(ProductRequest productRequestDTO);
 
     Product readProduct(Long productId);
 
-    Product updateProduct(Long productId, ProductRequestDTO productRequestDTO);
+    Product updateProduct(ProductRequest productRequestDTO);
 
     void deleteProduct(Long productId);
 }

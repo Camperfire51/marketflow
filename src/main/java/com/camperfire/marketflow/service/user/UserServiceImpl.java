@@ -1,11 +1,9 @@
 package com.camperfire.marketflow.service.user;
 
-import com.camperfire.marketflow.dto.RegisterRequest;
 import com.camperfire.marketflow.dto.crud.user.UserRequest;
-import com.camperfire.marketflow.exception.EmailAlreadyExistsException;
-import com.camperfire.marketflow.exception.UsernameAlreadyExistsException;
-import com.camperfire.marketflow.model.AuthUser;
+import com.camperfire.marketflow.exception.NotImplementedException;
 import com.camperfire.marketflow.model.Cart;
+import com.camperfire.marketflow.model.EmailMessage;
 import com.camperfire.marketflow.model.UserStatus;
 import com.camperfire.marketflow.model.user.Admin;
 import com.camperfire.marketflow.model.user.Customer;
@@ -14,14 +12,14 @@ import com.camperfire.marketflow.model.user.Vendor;
 import com.camperfire.marketflow.repository.user.AdminRepository;
 import com.camperfire.marketflow.repository.user.CustomerRepository;
 import com.camperfire.marketflow.repository.user.VendorRepository;
+import org.springframework.stereotype.Service;
 
-import java.util.UUID;
-
+@Service
 public class UserServiceImpl implements UserService {
 
-    public final AdminRepository adminRepository;
-    public final CustomerRepository customerRepository;
-    public final VendorRepository vendorRepository;
+    private final AdminRepository adminRepository;
+    private final CustomerRepository customerRepository;
+    private final VendorRepository vendorRepository;
 
     public UserServiceImpl(AdminRepository adminRepository, CustomerRepository customerRepository, VendorRepository vendorRepository) {
         this.adminRepository = adminRepository;
@@ -30,85 +28,54 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String register(RegisterRequest request){
-
-
-
-        if (authUserRepository.existsByEmail(registerRequest.getEmail()))
-            throw new EmailAlreadyExistsException("Email already exists");
-
-        if (authUserRepository.existsByUsername(registerRequest.getUsername()))
-            throw new UsernameAlreadyExistsException("Username already exists");
-
-        String token = UUID.randomUUID().toString();
-
-        AuthUser authUser = AuthUser.builder()
-                .username(registerRequest.getUsername())
-                .password(encoder.encode(registerRequest.getPassword()))
-                .email(registerRequest.getEmail())
-                .isEnabled(true)
-                .isAccountNonExpired(true)
-                .isAccountNonLocked(true)
-                .isCredentialsNonExpired(true)
-                .userRole(registerRequest.getUserRole())
-                .verificationToken(token)
-                .build();
-
-        switch (authUser.getUserRole()) {
+    public User createUser(UserRequest request) {
+        switch (request.getRole()) {
             case ROLE_CUSTOMER -> {
                 Customer customer = Customer.builder()
-                        .authUser(authUser)
-                        .address(registerRequest.getAddress())
+                        .address(request.getAddress())
                         .cart(Cart.builder().build())
-                        .status(UserStatus.APPROVED) //TODO: Implement email verification
+                        .status(UserStatus.APPROVED)
                         .build();
 
-                customerRepository.save(customer);
+                return customerRepository.save(customer);
             }
             case ROLE_VENDOR -> {
                 Vendor vendor = Vendor.builder()
-                        .authUser(authUser)
-                        .address(registerRequest.getAddress())
-                        .status(UserStatus.APPROVED) //TODO: Implement email verification
+                        .address(request.getAddress())
+                        .status(UserStatus.APPROVED)
                         .build();
 
-                vendorRepository.save(vendor);
+                return vendorRepository.save(vendor);
             }
 
             case ROLE_ADMIN -> {
                 Admin admin = Admin.builder()
-                        .authUser(authUser)
-                        .address(registerRequest.getAddress())
+                        .address(request.getAddress())
                         .status(UserStatus.APPROVED)
                         .build();
+
+                return adminRepository.save(admin);
             }
         }
 
-        authUserRepository.save(authUser);
-
-        String verificationLink = "http://localhost:8080/verify-email?token=" + token;
-
-        //emailVerificationProducer.sendVerificationEmail(registerRequest.getEmail(), verificationLink);
-        return verificationLink;
-    }
-
-    @Override
-    public User createUser(UserRequest request) {
         return null;
     }
 
     @Override
     public User readUser(Long id) {
-        return null;
+        //TODO: Implement read user logic.
+        throw new UnsupportedOperationException();
     }
 
     @Override
-    public User updateUser(UserUpdateRequest request) {
-        return null;
+    public User updateUser(UserRequest request) {
+        //TODO: Implement update user logic.
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void deleteUser(Long id) {
-
+        //TODO: Implement delete user logic.
+        throw new UnsupportedOperationException();
     }
 }

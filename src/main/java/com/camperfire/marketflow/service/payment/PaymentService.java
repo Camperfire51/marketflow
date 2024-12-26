@@ -6,13 +6,13 @@ import com.camperfire.marketflow.model.Payment;
 
 public interface PaymentService {
 
-    PaymentResponse processPayment(PaymentRequest requestDTO);
+    PaymentResponse processPayment(PaymentRequest request);
 
-    Payment createPayment(PaymentRequest requestDTO);
+    Payment createPayment(PaymentRequest request);
 
     Payment readPayment(Long id);
 
-    Payment updatePayment(Long id, PaymentRequest requestDTO);
+    Payment updatePayment(PaymentRequest request);
 
     void deletePayment(Long id);
 }

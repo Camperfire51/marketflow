@@ -12,9 +12,9 @@ public interface NotificationService {
 
     Notification createNotification(NotificationRequest request);
 
-    Notification readNotification(NotificationReadRequest request);
+    Notification readNotification(Long id);
 
-    Notification updateNotification(NotificationUpdateRequest request);
+    Notification updateNotification(NotificationRequest request);
 
-    void deleteNotification(NotificationDeleteRequest);
+    void deleteNotification(Long id);
 }

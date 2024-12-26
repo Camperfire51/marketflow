@@ -7,9 +7,9 @@ public interface CategoryService {
 
     Category createCategory(CategoryRequest request);
 
-    Category readCategory(CategoryReadRequest request);
+    Category readCategory(Long id);
 
-    Category updateCategory(CategoryUpdateRequest request);
+    Category updateCategory(CategoryRequest request);
 
-    void deleteCategory(CategoryDeleteRequest request);
+    void deleteCategory(Long id);
 }

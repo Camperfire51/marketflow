@@ -1,7 +1,7 @@
 package com.camperfire.marketflow.dto.mapper;
 
+import com.camperfire.marketflow.dto.crud.notification.NotificationRequest;
 import com.camperfire.marketflow.dto.mapper.utility.NotificationMapperUtility;
-import com.camperfire.marketflow.dto.request.NotificationRequest;
 import com.camperfire.marketflow.dto.response.NotificationResponse;
 import com.camperfire.marketflow.model.Notification;
 import org.mapstruct.Mapper;

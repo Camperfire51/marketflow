@@ -22,8 +22,6 @@ public class AuthUser {
     private boolean isCredentialsNonExpired = true;
     private boolean isEnabled = true;
     private String verificationToken;
-    @Enumerated(EnumType.STRING)
-    private UserRole userRole;
     @OneToOne(mappedBy = "authUser", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private User user;
 }

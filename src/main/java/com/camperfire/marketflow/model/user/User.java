@@ -1,9 +1,6 @@
 package com.camperfire.marketflow.model.user;
 
-import com.camperfire.marketflow.model.Address;
-import com.camperfire.marketflow.model.AuthUser;
-import com.camperfire.marketflow.model.Notification;
-import com.camperfire.marketflow.model.UserStatus;
+import com.camperfire.marketflow.model.*;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -37,4 +34,7 @@ public abstract class User {
     protected UserStatus status;
 
     protected LocalDateTime createdDate;
+
+    @Enumerated(EnumType.STRING)
+    private UserRole userRole;
 }

@@ -1,5 +1,6 @@
 package com.camperfire.marketflow.dto.mapper;
 
+import com.camperfire.marketflow.dto.crud.product.ProductRequest;
 import com.camperfire.marketflow.dto.mapper.utility.ProductMapperUtility;
 import com.camperfire.marketflow.dto.request.ProductRequestDTO;
 import com.camperfire.marketflow.dto.response.ProductResponseDTO;
@@ -15,11 +16,11 @@ public interface ProductMapper {
 
     @Mapping(target = "categoryId", source = "category.id")
     @Mapping(target = "vendorId", source = "vendor.id")
-    ProductRequestDTO toRequest(Product entity);
+    ProductRequest toRequest(Product entity);
 
     @Mapping(target = "category", source = "categoryId", qualifiedByName = "mapCategory")
     @Mapping(target = "vendor", source = "vendorId", qualifiedByName = "mapVendor")
-    Product toEntity(ProductRequestDTO dto);
+    Product toEntity(ProductRequest dto);
 
     @Mapping(target = "categoryId", source = "category.id")
     @Mapping(target = "vendorId", source = "vendor.id")

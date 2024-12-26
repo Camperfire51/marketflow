@@ -5,12 +5,16 @@ import com.camperfire.marketflow.model.Cart;
 
 public interface CartService {
 
+    Cart getAuthenticatedCart();
+
+    Cart addProductToCart(Long productId, Long quantity);
+
     Cart createCart(CartRequest request);
 
-    Cart readCart(CartReadRequest request);
+    Cart readCart(Long id);
 
-    Cart updateCart(CartUpdateRequest request);
+    Cart updateCart(CartRequest request);
 
-    void deleteCart(CartDeleteRequest request);
+    void deleteCart(Long id);
 
 }

@@ -1,6 +1,6 @@
 package com.camperfire.marketflow.service.invoice;
 
-import com.camperfire.marketflow.model.Order;
+import com.camperfire.marketflow.dto.crud.invoice.InvoiceRequest;
 import com.camperfire.marketflow.model.Invoice;
 
 public interface InvoiceService {
@@ -9,8 +9,8 @@ public interface InvoiceService {
 
     Invoice readInvoice(Long id);
 
-    Invoice updateInvoice(Long id, InvoiceRequest invoiceRequest);
+    Invoice updateInvoice(InvoiceRequest invoiceRequest);
 
-    void deleteInvoice(Order order);
+    void deleteInvoice(Long id);
 
 }

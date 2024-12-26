@@ -7,9 +7,9 @@ public interface OrderService {
 
     Order createOrder(OrderRequest request);
 
-    Order readOrder(OrderReadRequest request);
+    Order readOrder(Long id);
 
-    Order updateOrder(OrderUpdateRequest request);
+    Order updateOrder(OrderRequest request);
 
-    void deleteOrder(OrderDeleteRequest request);
+    void deleteOrder(Long id);
 }

@@ -3,6 +3,7 @@ package com.camperfire.marketflow.service.payment;
 import com.camperfire.marketflow.dto.mapper.PaymentMapper;
 import com.camperfire.marketflow.dto.crud.payment.PaymentRequest;
 import com.camperfire.marketflow.dto.response.PaymentResponse;
+import com.camperfire.marketflow.model.EmailMessage;
 import com.camperfire.marketflow.model.Payment;
 import com.camperfire.marketflow.model.PaymentStatus;
 import com.camperfire.marketflow.repository.PaymentRepository;
@@ -39,7 +40,7 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public Payment createPayment(PaymentRequest requestDTO) {
+    public Payment createPayment(PaymentRequest request) {
         return null;
     }
 
@@ -49,13 +50,15 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public Payment updatePayment(Long id, PaymentRequest requestDTO) {
+    public Payment updatePayment(PaymentRequest request) {
         return null;
     }
 
     @Override
     public void deletePayment(Long id) {
+        Payment payment = paymentRepository.findById(id).orElseThrow();
 
+        paymentRepository.delete(payment);
     }
 
 

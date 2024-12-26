@@ -1,8 +1,11 @@
 package com.camperfire.marketflow.dto.crud.inventory;
 
 import com.camperfire.marketflow.validation.CreateRequest;
+import com.camperfire.marketflow.validation.UpdateRequest;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Null;
+import jakarta.validation.constraints.Positive;
 import lombok.*;
 
 @Getter
@@ -11,6 +14,11 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class InventoryRequest {
+
+    @Null(groups = CreateRequest.class, message = "ID is not required for create request")
+    @NotNull(groups = UpdateRequest.class, message = "ID is required for update request.")
+    @Positive(message = "ID must be positive.")
+    private Long id;
 
     @NotNull(groups = CreateRequest.class, message = "Product id is required for create request.")
     private Long productId;

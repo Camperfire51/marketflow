@@ -2,6 +2,7 @@ package com.camperfire.marketflow.service.notification;
 
 import com.camperfire.marketflow.dto.mapper.NotificationMapper;
 import com.camperfire.marketflow.dto.crud.notification.NotificationRequest;
+import com.camperfire.marketflow.model.EmailMessage;
 import com.camperfire.marketflow.model.Notification;
 import com.camperfire.marketflow.model.NotificationType;
 import com.camperfire.marketflow.repository.NotificationRepository;
@@ -43,24 +44,28 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     public Notification createNotification(NotificationRequest request) {
-        Notification notification = notificationMapper.toEntity(notificationRequest);
+        Notification notification = notificationMapper.toEntity(request);
         return notificationRepository.save(notification);
     }
 
     @Override
-    public Notification readNotification(NotificationReadRequest request) {
-        return notificationRepository.findById(notificationId).orElseThrow();
+    public Notification readNotification(Long id) {
+        return notificationRepository.findById(id).orElseThrow();
     }
 
     @Override
-    public Notification updateNotification(NotificationUpdateRequest request) {
-        Notification notification = notificationMapper.toEntity(notificationRequest);
-        notification.setId(notificationId);
+    public Notification updateNotification(NotificationRequest request) {
+        Notification notification = notificationRepository.findById(request.getId()).orElseThrow();
+
+        //TODO: Implement update logic.
+
         return notificationRepository.save(notification);
     }
 
     @Override
-    public void deleteNotification() {
-        notificationRepository.deleteById();
+    public void deleteNotification(Long id) {
+        Notification notification = notificationRepository.findById(id).orElseThrow();
+
+        notificationRepository.delete(notification);
     }
 }

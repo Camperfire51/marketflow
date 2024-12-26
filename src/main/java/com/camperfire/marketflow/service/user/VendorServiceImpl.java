@@ -1,5 +1,6 @@
 package com.camperfire.marketflow.service.user;
 
+import com.camperfire.marketflow.dto.crud.product.ProductRequest;
 import com.camperfire.marketflow.dto.request.ProductRequestDTO;
 import com.camperfire.marketflow.exception.UnauthorizedException;
 import com.camperfire.marketflow.model.Product;
@@ -49,8 +50,8 @@ public class VendorServiceImpl implements VendorService {
     // Basic CRUD
 
     @Override
-    public Product createProduct(ProductRequestDTO productRequestDTO) {
-        return productService.createProduct(productRequestDTO);
+    public Product createProduct(ProductRequest request) {
+        return productService.createProduct(request);
     }
 
     @Override

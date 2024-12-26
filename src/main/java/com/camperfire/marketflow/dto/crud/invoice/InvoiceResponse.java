@@ -1,4 +1,4 @@
-package com.camperfire.marketflow.dto.response;
+package com.camperfire.marketflow.dto.crud.invoice;
 
 import lombok.*;
 

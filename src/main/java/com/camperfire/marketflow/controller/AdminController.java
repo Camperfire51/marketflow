@@ -9,7 +9,9 @@ import com.camperfire.marketflow.dto.response.ProductResponseDTO;
 import com.camperfire.marketflow.model.Category;
 import com.camperfire.marketflow.model.Product;
 import com.camperfire.marketflow.model.ProductStatus;
+import com.camperfire.marketflow.service.product.ProductService;
 import com.camperfire.marketflow.service.user.AdminService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,26 +19,17 @@ import org.springframework.web.bind.annotation.*;
 import java.math.BigDecimal;
 import java.util.List;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/admin")
 public class AdminController {
-
-    private final AdminService adminService;
-
+    private final ProductService productService;
     private final ProductMapper productMapper;
-
     private final CategoryMapper categoryMapper;
-
-    @Autowired
-    public AdminController(AdminService adminService, ProductMapper productMapper, CategoryMapper categoryMapper) {
-        this.adminService = adminService;
-        this.productMapper = productMapper;
-        this.categoryMapper = categoryMapper;
-    }
 
     @GetMapping("/product")
     public ResponseEntity<ProductResponseDTO> getProduct(@RequestParam(value = "id") Long id) {
-        Product product = adminService.getProduct(id);
+        Product product = productService.readProduct(id);
         return ResponseEntity.ok(productMapper.toResponse(product));
     }
 
@@ -49,7 +42,7 @@ public class AdminController {
             @RequestParam(value = "vendorId", required = false) Long vendorId,
             @RequestParam(value = "status", required = false) ProductStatus status) {
 
-        List<Product> products = adminService.getProducts(name, minPrice, maxPrice, category, vendorId, status);
+        List<Product> products = productService.getProducts(name, minPrice, maxPrice, category, vendorId, status);
 
         return ResponseEntity.ok(productMapper.toResponseList(products));
     }
@@ -84,8 +77,4 @@ public class AdminController {
 
         return ResponseEntity.ok().build();
     }
-
-
-
-
 }

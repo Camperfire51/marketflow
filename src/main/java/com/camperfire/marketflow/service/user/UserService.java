@@ -9,7 +9,7 @@ public interface UserService {
 
     User readUser(Long id);
 
-    User updateUser(UserUpdateRequest request);
+    User updateUser(UserRequest request);
 
     void deleteUser(Long id);
 }

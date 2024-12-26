@@ -1,7 +1,8 @@
 package com.camperfire.marketflow.dto.mapper;
 
+import com.camperfire.marketflow.dto.crud.invoice.InvoiceRequest;
 import com.camperfire.marketflow.dto.mapper.utility.InvoiceMapperUtility;
-import com.camperfire.marketflow.dto.response.InvoiceResponse;
+import com.camperfire.marketflow.dto.crud.invoice.InvoiceResponse;
 import com.camperfire.marketflow.model.Invoice;
 import org.mapstruct.Mapper;
 

@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
 
 @Cacheable
 @Entity
@@ -38,6 +40,9 @@ public class Product {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "vendor_id", nullable = false)
     private Vendor vendor;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    private Inventory inventory;
 
     @Column(nullable = false)
     private ProductStatus status;
