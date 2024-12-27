@@ -7,10 +7,9 @@ import com.camperfire.marketflow.model.ProductStatus;
 import com.camperfire.marketflow.model.UserPrincipal;
 import com.camperfire.marketflow.model.user.Vendor;
 import com.camperfire.marketflow.repository.ProductRepository;
-import com.camperfire.marketflow.specification.ProductSpecification;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,56 +18,17 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.List;
 
+@RequiredArgsConstructor
 @Service
 public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
     private final ProductMapper productMapper;
-    private final RedisTemplate<String, Object> redisTemplate;
-
-    @Autowired
-    public ProductServiceImpl(ProductRepository productRepository, ProductMapper productMapper, RedisTemplate<String, Object> redisTemplate) {
-        this.productRepository = productRepository;
-        this.productMapper = productMapper;
-        this.redisTemplate = redisTemplate;
-    }
 
     @Override
     public List<Product> getProducts(String name, BigDecimal minPrice, BigDecimal maxPrice, String categoryPath, Long vendorId, ProductStatus status) {
-        Specification<Product> spec = Specification.where(null);
-
-        //TODO: Instead of if chain, use JPA queries.
-
-        // Add name filter if provided
-        if (name != null && !name.isEmpty()) {
-            spec = spec.and(ProductSpecification.hasName(name));
-        }
-
-        // Add category path filter if provided
-        if (categoryPath != null && !categoryPath.isEmpty()) {
-            spec = spec.and(ProductSpecification.hasCategoryPath(categoryPath));
-        }
-
-        // Add minPrice filter if provided
-        if (minPrice != null) {
-            spec = spec.and(ProductSpecification.hasPriceGreaterThanOrEqual(minPrice));
-        }
-
-        // Add maxPrice filter if provided
-        if (maxPrice != null) {
-            spec = spec.and(ProductSpecification.hasPriceLessThanOrEqual(maxPrice));
-        }
-
-        // Add vendor filter if provided
-        if (vendorId != null) {
-            spec = spec.and(ProductSpecification.hasVendorById(vendorId));
-        }
-
-        if (status != null) {
-            spec = spec.and(ProductSpecification.hasStatus(status));
-        }
-
-        return productRepository.findAll(spec);
+        //TODO: Implement security mechanism for vendors to be able to see only their pending/rejected/removed products and customers to see only published products.
+        return productRepository.findProducts(name, minPrice, maxPrice, categoryPath, vendorId, status);
     }
 
     @PreAuthorize("hasRole('ADMIN')")

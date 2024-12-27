@@ -1,13 +1,10 @@
 package com.camperfire.marketflow.dto.mapper.utility;
 
-import com.camperfire.marketflow.dto.mapper.ProductMapper;
-import com.camperfire.marketflow.dto.response.ProductResponseDTO;
 import com.camperfire.marketflow.model.Product;
 import org.mapstruct.Named;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
 import java.util.Map;
 
 @Component

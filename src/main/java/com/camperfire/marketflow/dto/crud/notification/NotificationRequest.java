@@ -25,4 +25,8 @@ public class NotificationRequest {
 
     @NotNull(message = "Message can not be null")
     private String message;
+
+    @NotNull(groups = CreateRequest.class, message = "ID is required for create request.")
+    @Positive(message = "ID must be positive.")
+    private Long userId;
 }

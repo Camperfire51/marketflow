@@ -10,6 +10,8 @@ public interface NotificationService {
 
     List<Notification> getNotifications(Long userId, NotificationType type, Boolean isRead);
 
+    List<Notification> getAuthenticatedNotifications(NotificationType type, Boolean isRead);
+
     Notification createNotification(NotificationRequest request);
 
     Notification readNotification(Long id);

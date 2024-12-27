@@ -5,6 +5,7 @@ import com.camperfire.marketflow.dto.mapper.EmailMapper;
 import com.camperfire.marketflow.model.Category;
 import com.camperfire.marketflow.model.EmailMessage;
 import com.camperfire.marketflow.repository.EmailMessageRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -20,15 +21,15 @@ public class EmailServiceImpl implements EmailService {
     private final EmailMapper emailMapper;
     private final JavaMailSender emailSender;
     private final KafkaTemplate<String, Object> kafkaTemplate;
-    private final String TOPIC;
 
-    @Autowired
-    public EmailServiceImpl(EmailMessageRepository emailMessageRepository, EmailMapper emailMapper, JavaMailSender emailSender, KafkaTemplate<String, Object> kafkaTemplate, @Value("${kafka.topics.email-topic}") String topic) {
+    @Value("${kafka.topics.email-topic}")
+    private String TOPIC;
+
+    public EmailServiceImpl(EmailMessageRepository emailMessageRepository, EmailMapper emailMapper, JavaMailSender emailSender, KafkaTemplate<String, Object> kafkaTemplate) {
         this.emailMessageRepository = emailMessageRepository;
         this.emailMapper = emailMapper;
         this.emailSender = emailSender;
         this.kafkaTemplate = kafkaTemplate;
-        TOPIC = topic;
     }
 
     @KafkaListener(topics = "${kafka.topics.email-topic}", groupId = "${kafka.groups.email-group}")

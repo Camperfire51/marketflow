@@ -1,12 +1,11 @@
 package com.camperfire.marketflow.service.payment;
 
 import com.camperfire.marketflow.dto.crud.payment.PaymentRequest;
-import com.camperfire.marketflow.dto.response.PaymentResponse;
 import com.camperfire.marketflow.model.Payment;
 
 public interface PaymentService {
 
-    PaymentResponse processPayment(PaymentRequest request);
+    Payment processPayment(PaymentRequest request);
 
     Payment createPayment(PaymentRequest request);
 

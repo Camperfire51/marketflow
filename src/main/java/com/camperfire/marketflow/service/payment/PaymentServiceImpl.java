@@ -1,42 +1,31 @@
 package com.camperfire.marketflow.service.payment;
 
-import com.camperfire.marketflow.dto.mapper.PaymentMapper;
 import com.camperfire.marketflow.dto.crud.payment.PaymentRequest;
-import com.camperfire.marketflow.dto.response.PaymentResponse;
-import com.camperfire.marketflow.model.EmailMessage;
+import com.camperfire.marketflow.dto.mapper.PaymentMapper;
 import com.camperfire.marketflow.model.Payment;
 import com.camperfire.marketflow.model.PaymentStatus;
 import com.camperfire.marketflow.repository.PaymentRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 
+//TODO: Implement CRUD methods
+@RequiredArgsConstructor
 @Service
 public class PaymentServiceImpl implements PaymentService {
 
     private final PaymentRepository paymentRepository;
     private final PaymentMapper paymentMapper;
 
-    @Autowired
-    public PaymentServiceImpl(PaymentRepository paymentRepository, PaymentMapper paymentMapper) {
-        this.paymentRepository = paymentRepository;
-        this.paymentMapper = paymentMapper;
-    }
-
     @Override
-    public PaymentResponse processPayment(PaymentRequest requestDTO) {
+    public Payment processPayment(PaymentRequest requestDTO) {
         Payment payment = paymentMapper.toEntity(requestDTO);
 
-        // Simulate payment processing
-        payment.setStatus(PaymentStatus.COMPLETED); // Assume success for now
+        payment.setStatus(PaymentStatus.COMPLETED);
         payment.setPaymentDate(LocalDateTime.now());
 
-        // Save to DB
-        payment = paymentRepository.save(payment);
-
-        // Map Entity to ResponseDTO and return
-        return paymentMapper.toResponse(payment);
+        return paymentRepository.save(payment);
     }
 
     @Override

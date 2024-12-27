@@ -1,45 +1,42 @@
 package com.camperfire.marketflow.service.notification;
 
-import com.camperfire.marketflow.dto.mapper.NotificationMapper;
 import com.camperfire.marketflow.dto.crud.notification.NotificationRequest;
-import com.camperfire.marketflow.model.EmailMessage;
+import com.camperfire.marketflow.dto.mapper.NotificationMapper;
+import com.camperfire.marketflow.model.AuthUser;
 import com.camperfire.marketflow.model.Notification;
 import com.camperfire.marketflow.model.NotificationType;
+import com.camperfire.marketflow.model.UserPrincipal;
+import com.camperfire.marketflow.model.user.User;
 import com.camperfire.marketflow.repository.NotificationRepository;
-import com.camperfire.marketflow.specification.NotificationSpecification;
-import org.springframework.data.jpa.domain.Specification;
+import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@RequiredArgsConstructor
 @Service
 public class NotificationServiceImpl implements NotificationService {
 
     private final NotificationRepository notificationRepository;
     private final NotificationMapper notificationMapper;
 
-    public NotificationServiceImpl(KafkaTemplate<String, Object> kafkaTemplate, NotificationRepository notificationRepository, NotificationMapper notificationMapper) {
-        this.notificationRepository = notificationRepository;
-        this.notificationMapper = notificationMapper;
+    @Override
+    public List<Notification> getNotifications(Long userId, NotificationType type, Boolean isRead) {
+        return notificationRepository.findNotifications(userId, type, isRead);
     }
 
     @Override
-    public List<Notification> getNotifications(Long userId, NotificationType type, Boolean isRead) {
-        Specification<Notification> spec = Specification.where(null);
+    public List<Notification> getAuthenticatedNotifications(NotificationType type, Boolean isRead) {
 
-        if (userId != null) {
-            spec = spec.and(NotificationSpecification.hasUserById(userId));
-        }
+        UserPrincipal principal = (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        if (type != null) {
-            spec = spec.and(NotificationSpecification.hasType(type));
-        }
+        AuthUser authUser = principal.getAuthUser();
 
-        if (isRead != null) {
-            spec = spec.and(NotificationSpecification.isRead(isRead));
-        }
-        return notificationRepository.findAll(spec);
+        User user = authUser.getUser();
+
+        return notificationRepository.findNotifications(user.getId(), type, isRead);
     }
 
     @Override

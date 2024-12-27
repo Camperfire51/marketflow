@@ -26,6 +26,6 @@ public class CartRequest {
     @NotNull(message = "Products cannot be null")
     private Map<
             @NotNull(message = "Product ID cannot be null") @Positive(message = "Product ID must be positive") Long,
-            @NotNull(message = "Quantity cannot be null") @Min(value = 0, message = "Quantity cannot be negative") Long
+            @NotNull(message = "Quantity cannot be null") @Min(value = 0, message = "At least 1 product is required") Long
             > products = new HashMap<>();
 }

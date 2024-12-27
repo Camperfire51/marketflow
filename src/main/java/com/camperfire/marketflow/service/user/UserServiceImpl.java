@@ -12,20 +12,16 @@ import com.camperfire.marketflow.model.user.Vendor;
 import com.camperfire.marketflow.repository.user.AdminRepository;
 import com.camperfire.marketflow.repository.user.CustomerRepository;
 import com.camperfire.marketflow.repository.user.VendorRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+@RequiredArgsConstructor
 @Service
 public class UserServiceImpl implements UserService {
 
     private final AdminRepository adminRepository;
     private final CustomerRepository customerRepository;
     private final VendorRepository vendorRepository;
-
-    public UserServiceImpl(AdminRepository adminRepository, CustomerRepository customerRepository, VendorRepository vendorRepository) {
-        this.adminRepository = adminRepository;
-        this.customerRepository = customerRepository;
-        this.vendorRepository = vendorRepository;
-    }
 
     @Override
     public User createUser(UserRequest request) {

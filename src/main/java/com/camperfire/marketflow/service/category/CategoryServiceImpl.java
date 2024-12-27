@@ -4,15 +4,21 @@ import com.camperfire.marketflow.dto.crud.category.CategoryRequest;
 import com.camperfire.marketflow.dto.mapper.CategoryMapper;
 import com.camperfire.marketflow.model.Category;
 import com.camperfire.marketflow.repository.CategoryRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
+import java.util.List;
+
+@RequiredArgsConstructor
+@Service
 public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
     private final CategoryMapper categoryMapper;
 
-    public CategoryServiceImpl(CategoryRepository CategoryRepository, CategoryMapper CategoryMapper) {
-        this.categoryRepository = CategoryRepository;
-        this.categoryMapper = CategoryMapper;
+    @Override
+    public List<Category> getAllCategories() {
+        return categoryRepository.findAll();
     }
 
     @Override

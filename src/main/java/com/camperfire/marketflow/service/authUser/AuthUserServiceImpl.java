@@ -6,7 +6,6 @@ import com.camperfire.marketflow.dto.logic.login.LoginRequest;
 import com.camperfire.marketflow.dto.logic.register.RegisterRequest;
 import com.camperfire.marketflow.dto.mapper.AuthUserMapper;
 
-import com.camperfire.marketflow.dto.response.LoginResponse;
 import com.camperfire.marketflow.exception.EmailAlreadyExistsException;
 import com.camperfire.marketflow.exception.UsernameAlreadyExistsException;
 import com.camperfire.marketflow.exception.WrongCredentialsException;
@@ -15,11 +14,11 @@ import com.camperfire.marketflow.model.user.User;
 import com.camperfire.marketflow.repository.AuthUserRepository;
 import com.camperfire.marketflow.service.JWTService;
 import com.camperfire.marketflow.service.user.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -47,17 +46,13 @@ public class AuthUserServiceImpl implements AuthUserService{
         encoder = new BCryptPasswordEncoder(12);
     }
 
-    public AuthUser getAuthUser() {
-        UserPrincipal userPrincipal = (UserPrincipal) SecurityContextHolder.getContext()
-                .getAuthentication()
-                .getPrincipal();
-    }
-
     @Override
     public String register(RegisterRequest request){
 
         AuthUserRequest authUserRequest = request.getAuthUserRequest();
         UserRequest userRequest = request.getUserRequest();
+
+        authUserRequest.setPassword(encoder.encode(authUserRequest.getPassword()));
 
         if (authUserRepository.existsByEmail(authUserRequest.getEmail()))
             throw new EmailAlreadyExistsException("Email already exists");

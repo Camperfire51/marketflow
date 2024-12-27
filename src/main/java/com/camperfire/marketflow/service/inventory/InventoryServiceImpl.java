@@ -4,17 +4,20 @@ import com.camperfire.marketflow.dto.crud.inventory.InventoryRequest;
 import com.camperfire.marketflow.dto.mapper.InventoryMapper;
 import com.camperfire.marketflow.model.Inventory;
 import com.camperfire.marketflow.repository.InventoryRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+@RequiredArgsConstructor
 @Service
 public class InventoryServiceImpl implements InventoryService {
 
     private final InventoryRepository inventoryRepository;
     private final InventoryMapper inventoryMapper;
 
-    public InventoryServiceImpl(InventoryRepository inventoryRepository, InventoryMapper inventoryMapper) {
-        this.inventoryRepository = inventoryRepository;
-        this.inventoryMapper = inventoryMapper;
+    @Override
+    public void setStock(Inventory inventory, Long newStock){
+        inventory.setStock(newStock);
+        inventoryRepository.save(inventory);
     }
 
     @Override

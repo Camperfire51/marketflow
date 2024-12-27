@@ -6,20 +6,16 @@ import com.camperfire.marketflow.model.EmailMessage;
 import com.camperfire.marketflow.model.Invoice;
 import com.camperfire.marketflow.repository.InvoiceRepository;
 import com.camperfire.marketflow.service.email.EmailService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+@RequiredArgsConstructor
 @Service
 public class InvoiceServiceImpl implements InvoiceService {
 
     private final InvoiceMapper invoiceMapper;
     private final InvoiceRepository invoiceRepository;
     private final EmailService emailService;
-
-    public InvoiceServiceImpl(InvoiceMapper invoiceMapper, InvoiceRepository invoiceRepository, EmailService emailService) {
-        this.invoiceMapper = invoiceMapper;
-        this.invoiceRepository = invoiceRepository;
-        this.emailService = emailService;
-    }
 
     @Override
     public Invoice createInvoice(InvoiceRequest invoiceRequest){

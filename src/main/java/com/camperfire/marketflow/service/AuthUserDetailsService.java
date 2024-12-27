@@ -3,21 +3,18 @@ package com.camperfire.marketflow.service;
 import com.camperfire.marketflow.model.AuthUser;
 import com.camperfire.marketflow.model.UserPrincipal;
 import com.camperfire.marketflow.repository.AuthUserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+@RequiredArgsConstructor
 @Service
 public class AuthUserDetailsService implements UserDetailsService {
 
     private final AuthUserRepository authUserRepository;
-
-    @Autowired
-    public AuthUserDetailsService(AuthUserRepository authUserRepository) {
-        this.authUserRepository = authUserRepository;
-    }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

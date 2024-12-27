@@ -5,6 +5,8 @@ import com.camperfire.marketflow.model.Order;
 
 public interface OrderService {
 
+    Order submitOrder();
+
     Order createOrder(OrderRequest request);
 
     Order readOrder(Long id);

@@ -1,7 +1,7 @@
 package com.camperfire.marketflow.dto.mapper;
 
 import com.camperfire.marketflow.dto.crud.category.CategoryRequest;
-import com.camperfire.marketflow.dto.response.CategoryResponseDTO;
+import com.camperfire.marketflow.dto.crud.category.CategoryResponse;
 import com.camperfire.marketflow.model.Category;
 import org.mapstruct.Mapper;
 
@@ -12,7 +12,7 @@ public interface CategoryMapper {
 
     Category toEntity(CategoryRequest request);
 
-    CategoryResponseDTO toResponse(Category entity);
+    CategoryResponse toResponse(Category entity);
 
-    List<CategoryResponseDTO> toResponseList(List<Category> entities);
+    List<CategoryResponse> toResponseList(List<Category> entities);
 }
