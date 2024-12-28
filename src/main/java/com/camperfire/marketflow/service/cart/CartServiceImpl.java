@@ -41,7 +41,7 @@ public class CartServiceImpl implements CartService {
     @Override
     public Cart getAuthenticatedCart(){
         //TODO: This approach where services simply grab user object (in that case Customer customer) from user principle is not right.
-        //TODO: Add product stock validation when getting user cart.
+        //TODO: Add product stock validation when getting user cart. Depending on validation result, change the contents of the cart accordingly.
 
         UserPrincipal userPrincipal = (UserPrincipal) SecurityContextHolder.getContext()
                 .getAuthentication()

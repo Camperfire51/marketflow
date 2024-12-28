@@ -14,8 +14,8 @@ import com.camperfire.marketflow.service.cart.CartService;
 import com.camperfire.marketflow.service.inventory.InventoryService;
 import com.camperfire.marketflow.service.invoice.InvoiceService;
 import com.camperfire.marketflow.service.notification.NotificationService;
-import com.camperfire.marketflow.service.payment.PaymentService;
 import com.camperfire.marketflow.service.product.ProductService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -30,11 +30,11 @@ public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final InvoiceService invoiceService;
     private final ProductService productService;
-    private final PaymentService paymentService;
     private final InventoryService inventoryService;
     private final NotificationService notificationService;
     private final CartService cartService;
 
+    @Transactional
     @Override
     public Order submitOrder() {
         //TODO: This approach where services simply grab user object (in that case Customer customer) from user principle is not right.

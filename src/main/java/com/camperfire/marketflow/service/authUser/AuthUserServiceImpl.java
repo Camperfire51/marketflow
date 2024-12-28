@@ -5,16 +5,16 @@ import com.camperfire.marketflow.dto.crud.user.UserRequest;
 import com.camperfire.marketflow.dto.logic.login.LoginRequest;
 import com.camperfire.marketflow.dto.logic.register.RegisterRequest;
 import com.camperfire.marketflow.dto.mapper.AuthUserMapper;
-
 import com.camperfire.marketflow.exception.EmailAlreadyExistsException;
 import com.camperfire.marketflow.exception.UsernameAlreadyExistsException;
 import com.camperfire.marketflow.exception.WrongCredentialsException;
-import com.camperfire.marketflow.model.*;
+import com.camperfire.marketflow.model.AuthUser;
+import com.camperfire.marketflow.model.UserStatus;
 import com.camperfire.marketflow.model.user.User;
 import com.camperfire.marketflow.repository.AuthUserRepository;
 import com.camperfire.marketflow.service.JWTService;
 import com.camperfire.marketflow.service.user.UserService;
-import lombok.RequiredArgsConstructor;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -46,6 +46,7 @@ public class AuthUserServiceImpl implements AuthUserService{
         encoder = new BCryptPasswordEncoder(12);
     }
 
+    @Transactional
     @Override
     public String register(RegisterRequest request){
 
