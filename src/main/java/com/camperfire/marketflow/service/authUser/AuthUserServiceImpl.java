@@ -50,20 +50,31 @@ public class AuthUserServiceImpl implements AuthUserService{
     @Override
     public String register(RegisterRequest request){
 
-        AuthUserRequest authUserRequest = request.getAuthUserRequest();
+        AuthUserRequest createAuthUserRequest = request.getAuthUserRequest();
         UserRequest userRequest = request.getUserRequest();
 
-        authUserRequest.setPassword(encoder.encode(authUserRequest.getPassword()));
+        createAuthUserRequest.setPassword(encoder.encode(createAuthUserRequest.getPassword()));
 
-        if (authUserRepository.existsByEmail(authUserRequest.getEmail()))
+        if (authUserRepository.existsByEmail(createAuthUserRequest.getEmail()))
             throw new EmailAlreadyExistsException("Email already exists");
 
-        if (authUserRepository.existsByUsername(authUserRequest.getUsername()))
+        if (authUserRepository.existsByUsername(createAuthUserRequest.getUsername()))
             throw new UsernameAlreadyExistsException("Username already exists");
 
-        AuthUser authUser = createAuthUser(authUserRequest);
+        AuthUser authUser = createAuthUser(createAuthUserRequest);
 
         User user = userService.createUser(userRequest);
+
+        AuthUserRequest updateAuthUserRequest = AuthUserRequest.builder()
+                .userId(user.getId())
+                .build();
+
+        UserRequest updateUserRequest = UserRequest.builder()
+                .authUserId(authUser.getId())
+                .build();
+
+        updateAuthUser(updateAuthUserRequest);
+        userService.updateUser(updateUserRequest);
 
         String verificationLink = "http://localhost:8080/verify-email?token=" + authUser.getVerificationToken();
 
